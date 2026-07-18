@@ -82,14 +82,15 @@ We will complete the official Iraqi corpus, connect versioned French legislation
 
 ## Links to add
 
-- ChatGPT App MCP endpoint: `[HTTPS_URL]/mcp`
-- Standalone global demo: `[HTTPS_URL]/demo`
+- ChatGPT App MCP endpoint: `https://al-muhami-global.onrender.com/mcp`
+- Standalone global demo: `https://al-muhami-global.onrender.com/demo`
+- Privacy and data provenance: `https://al-muhami-global.onrender.com/privacy`
 - Source repository: `https://github.com/amwajalfurat747-source/al-muhami-global`
 - Public YouTube demo with audio: `[YOUTUBE_URL]`
 
 ## Final checklist
 
-- [ ] Deploy to a stable public HTTPS endpoint.
+- [x] Deploy to a public HTTPS endpoint and verify the standalone article 305 journey.
 - [ ] Connect `/mcp` in ChatGPT Developer mode.
 - [ ] Run the final demo in a new GPT-5.6 conversation.
 - [ ] Show the language and country filters in the recording.

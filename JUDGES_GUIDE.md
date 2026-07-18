@@ -2,10 +2,11 @@
 
 ## Submission links
 
-Replace these placeholders before submitting:
+Replace the remaining placeholders before submitting:
 
-- Live ChatGPT App MCP endpoint: `[HTTPS_URL]/mcp`
-- Standalone demo: `[HTTPS_URL]/demo`
+- Live ChatGPT App MCP endpoint: `https://al-muhami-global.onrender.com/mcp`
+- Standalone demo: `https://al-muhami-global.onrender.com/demo`
+- Privacy and data provenance: `https://al-muhami-global.onrender.com/privacy`
 - Public source repository: `https://github.com/amwajalfurat747-source/al-muhami-global`
 - Public YouTube demo with audio: `[YOUTUBE_URL]`
 - Primary Codex `/feedback` Session ID: `[CODEX_SESSION_ID]`
@@ -15,6 +16,8 @@ Replace these placeholders before submitting:
 Al-Muhami Global is a multilingual ChatGPT App and deterministic legal-research prototype. The current release provides eleven read-only MCP tools, a responsive standalone demo, four interface languages, three jurisdiction filters, an Iraqi working corpus, twelve civil/criminal procedural routes, fourteen filing checklists, case-path tracing, and conservative comparison of potentially divergent final decisions.
 
 No account, OpenAI API key, real client data, or paid service is required for local testing.
+
+The public Render deployment was verified on 18 July 2026 by loading the multilingual catalog, opening the privacy page, and completing the Iraqi Civil Procedure article 305 guided journey. Because it uses Render's free instance, the first request after inactivity can take about a minute while the service wakes.
 
 ## Local setup
 

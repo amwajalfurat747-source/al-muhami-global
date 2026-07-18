@@ -199,11 +199,17 @@ The automated suite verifies multilingual country catalogs, article lookup and g
 
 ## Connect to ChatGPT
 
-Deploy the server over public HTTPS, then:
+The verified public deployment is:
+
+- Standalone demo: `https://al-muhami-global.onrender.com/demo`
+- MCP endpoint: `https://al-muhami-global.onrender.com/mcp`
+- Privacy and data provenance: `https://al-muhami-global.onrender.com/privacy`
+
+The Render free instance can sleep after inactivity, so the first request can take about a minute while it wakes. To connect the deployed server:
 
 1. Enable Developer mode in ChatGPT under **Settings → Apps & Connectors → Advanced settings**.
 2. Choose **Create app**.
-3. Add the public MCP URL, such as `https://your-domain.example/mcp`.
+3. Add `https://al-muhami-global.onrender.com/mcp`.
 4. Start a new GPT-5.6 conversation and enable Al-Muhami Global.
 
 Follow the current [OpenAI Apps SDK quickstart](https://developers.openai.com/apps-sdk/quickstart) if the menu labels differ.
@@ -264,6 +270,8 @@ See [JUDGES_GUIDE.md](JUDGES_GUIDE.md) for exact prompts, expected behavior, lim
 ## Deployment
 
 The repository includes a Dockerfile and Render blueprint.
+
+The current Build Week deployment is live at `https://al-muhami-global.onrender.com` and was verified on 18 July 2026 by loading the global catalog, privacy notice, and Iraqi Civil Procedure article 305 guided journey.
 
 ```bash
 docker build -t al-muhami-global .

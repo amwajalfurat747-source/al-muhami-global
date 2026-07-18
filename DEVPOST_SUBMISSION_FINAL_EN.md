@@ -98,8 +98,9 @@ The working MVP and the material functionality described here were built or mean
 
 ## Links
 
-- Live MCP endpoint: `[HTTPS_URL]/mcp`
-- Standalone demo: `[HTTPS_URL]/demo`
+- Live MCP endpoint: `https://al-muhami-global.onrender.com/mcp`
+- Standalone demo: `https://al-muhami-global.onrender.com/demo`
+- Privacy and data provenance: `https://al-muhami-global.onrender.com/privacy`
 - Source repository: `https://github.com/amwajalfurat747-source/al-muhami-global`
 - Public YouTube demo with audio: `[YOUTUBE_URL]`
 - Codex `/feedback` Session ID: `[CODEX_SESSION_ID]`

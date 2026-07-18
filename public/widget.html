@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Al-Muhami Global · المحامي العالمي</title>
+    <style>
+      :root {
+        --ink: #142437;
+        --muted: #68778b;
+        --line: #dfe7eb;
+        --paper: #fff;
+        --canvas: #f3f6f7;
+        --navy: #102d48;
+        --teal: #0d716b;
+        --teal-soft: #e8f5f3;
+        --gold: #d0a64d;
+        --gold-soft: #fbf5e6;
+        --red: #a33e4d;
+        --red-soft: #f9ebed;
+        --blue-soft: #eaf1f7;
+        --shadow: 0 20px 55px rgba(16, 45, 72, 0.09);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 5% 0%, rgba(13, 113, 107, 0.09), transparent 32rem),
+          radial-gradient(circle at 96% 8%, rgba(208, 166, 77, 0.11), transparent 26rem),
+          var(--canvas);
+        color: var(--ink);
+        font-family: Inter, "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+        line-height: 1.55;
+      }
+
+      button, input, select { font: inherit; }
+      button { cursor: pointer; }
+      a { color: var(--teal); }
+      .app { width: min(1220px, 100%); margin: 0 auto; padding: 18px; }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 25px;
+        border-radius: 24px;
+        color: #fff;
+        background: linear-gradient(128deg, #102d48 0%, #0e5557 72%, #0d716b 100%);
+        box-shadow: var(--shadow);
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto -80px -150px auto;
+        width: 380px;
+        height: 380px;
+        border: 1px solid rgba(255,255,255,.14);
+        border-radius: 50%;
+        box-shadow: 0 0 0 42px rgba(255,255,255,.035), 0 0 0 84px rgba(255,255,255,.022);
+      }
+      .top-row, .brand, .language-wrap, .legend, .badges, .card-actions, .breadcrumb {
+        display: flex;
+        align-items: center;
+      }
+      .top-row { position: relative; z-index: 1; justify-content: space-between; gap: 18px; }
+      .brand { gap: 13px; }
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 56px;
+        height: 56px;
+        flex: 0 0 56px;
+        border: 1px solid rgba(255,255,255,.3);
+        border-radius: 17px;
+        background: rgba(255,255,255,.1);
+      }
+      .brand-mark svg { width: 34px; height: 34px; }
+      .brand h1 { margin: 0; font-size: clamp(1.42rem, 3.5vw, 2rem); letter-spacing: -.025em; }
+      .brand p { margin: 1px 0 0; color: rgba(255,255,255,.72); font-size: .78rem; }
+      .language-wrap { gap: 8px; }
+      .language-wrap label { font-size: .76rem; color: rgba(255,255,255,.75); }
+      .language-wrap select {
+        padding: 8px 30px 8px 10px;
+        border: 1px solid rgba(255,255,255,.28);
+        border-radius: 11px;
+        background: rgba(255,255,255,.12);
+        color: #fff;
+        outline: none;
+      }
+      .language-wrap option { color: var(--ink); background: #fff; }
+      .hero-copy { position: relative; z-index: 1; max-width: 800px; margin: 21px 0 15px; color: rgba(255,255,255,.83); font-size: .95rem; }
+      .search-box {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 9px;
+        padding: 8px;
+        border-radius: 15px;
+        background: #fff;
+        box-shadow: 0 10px 28px rgba(0,0,0,.12);
+      }
+      .search-box input { min-width: 0; padding: 10px 12px; border: 0; outline: 0; background: transparent; color: var(--ink); }
+
+      .primary, .secondary, .ghost, .text-button {
+        border: 0;
+        border-radius: 11px;
+        transition: transform 150ms ease, opacity 150ms ease;
+      }
+      .primary { padding: 10px 16px; background: var(--gold); color: #172533; font-weight: 800; }
+      .secondary { padding: 10px 15px; background: var(--teal); color: #fff; font-weight: 750; }
+      .ghost { padding: 10px 15px; background: var(--blue-soft); color: var(--navy); font-weight: 750; }
+      .text-button { padding: 0; background: transparent; color: var(--teal); font-size: .76rem; font-weight: 800; }
+      button:hover { transform: translateY(-1px); }
+      button:disabled { opacity: .55; cursor: wait; transform: none; }
+
+      .path-panel {
+        position: relative;
+        z-index: 2;
+        margin: 15px 0 0;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 19px;
+        background: rgba(255,255,255,.97);
+        box-shadow: 0 12px 35px rgba(16,45,72,.07);
+      }
+      .path-heading { display: flex; justify-content: space-between; gap: 12px; align-items: start; margin-bottom: 12px; }
+      .path-heading h2 { margin: 0; font-size: 1rem; }
+      .path-heading p { margin: 2px 0 0; color: var(--muted); font-size: .76rem; }
+      .path-badge { padding: 5px 9px; border-radius: 999px; background: var(--teal-soft); color: var(--teal); font-size: .68rem; font-weight: 800; white-space: nowrap; }
+      .filter-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 9px; }
+      .procedure-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 9px; }
+      .field { display: grid; gap: 5px; min-width: 0; }
+      .field label { color: var(--muted); font-size: .68rem; font-weight: 750; }
+      .field select, .field input {
+        width: 100%;
+        min-width: 0;
+        padding: 9px 10px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--ink);
+        outline: none;
+      }
+      .field select:focus, .field input:focus { border-color: #83b9b4; box-shadow: 0 0 0 3px rgba(13,113,107,.08); }
+      .filter-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .breadcrumb { flex-wrap: wrap; gap: 6px; margin-top: 11px; color: var(--muted); font-size: .7rem; }
+      .crumb { padding: 4px 8px; border-radius: 999px; background: #f1f5f7; }
+      .crumb + .crumb::before { content: "›"; margin-inline-end: 8px; color: #99a6b4; }
+
+      .status-line { display: flex; justify-content: space-between; gap: 12px; margin: 13px 2px 0; color: var(--muted); font-size: .75rem; }
+      .legend { gap: 9px; flex-wrap: wrap; }
+      .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+      .dot { width: 7px; height: 7px; border-radius: 50%; }
+      .dot.published { background: var(--teal); }
+      .dot.demo { background: var(--gold); }
+      .dot.catalog { background: #8796aa; }
+
+      .workspace { display: grid; grid-template-columns: minmax(0,1fr) 270px; gap: 15px; margin-top: 14px; }
+      .panel { border: 1px solid var(--line); border-radius: 19px; background: rgba(255,255,255,.96); box-shadow: 0 9px 32px rgba(16,45,72,.05); }
+      .main-panel { min-height: 500px; padding: 20px; }
+      .side-panel { align-self: start; position: sticky; top: 12px; padding: 15px; }
+      .panel-heading { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 15px; }
+      .panel-heading h2 { margin: 0; font-size: 1.13rem; }
+      .panel-heading p { margin: 3px 0 0; color: var(--muted); font-size: .78rem; }
+      .stats { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+      .stat { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(180deg,#fff,#f8fafb); }
+      .stat strong { display: block; color: var(--navy); font-size: 1.16rem; }
+      .stat span { color: var(--muted); font-size: .66rem; }
+      .side-title { margin: 17px 0 8px; color: var(--navy); font-size: .78rem; font-weight: 850; }
+      .quick-list { display: grid; gap: 7px; }
+      .quick-action { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); text-align: start; font-size: .75rem; }
+
+      .cards { display: grid; gap: 10px; }
+      .country-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+      .card { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+      .card:hover { border-color: #b9d5d2; box-shadow: 0 7px 20px rgba(16,45,72,.05); }
+      .card-top { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+      .card h3 { margin: 0; font-size: .93rem; }
+      .subtitle { margin-top: 3px; color: var(--muted); font-size: .72rem; }
+      .snippet { margin: 9px 0; color: #46566a; font-size: .78rem; }
+      .country-flag { font-size: 1.65rem; line-height: 1; }
+      .badges { flex-wrap: wrap; gap: 5px; }
+      .badge { display: inline-flex; align-items: center; padding: 4px 7px; border-radius: 999px; background: var(--blue-soft); color: #425b72; font-size: .64rem; }
+      .badge.published { background: var(--teal-soft); color: var(--teal); }
+      .badge.demo { background: var(--gold-soft); color: #755b20; }
+      .badge.warning { background: var(--red-soft); color: var(--red); }
+      .card-actions { flex-wrap: wrap; gap: 9px; margin-top: 10px; }
+      .notice { padding: 11px 12px; border: 1px solid #ead8a9; border-radius: 11px; background: var(--gold-soft); color: #655020; font-size: .72rem; }
+      .article-box { margin: 10px 0; padding: 13px 14px; border-inline-start: 4px solid var(--gold); border-radius: 11px; background: var(--gold-soft); }
+      .article-box h4 { margin: 0 0 5px; font-size: .78rem; }
+      .article-box p { margin: 0; white-space: pre-wrap; font-size: .82rem; }
+
+      .timeline { position: relative; display: grid; gap: 8px; margin-top: 10px; }
+      .timeline-step { display: grid; grid-template-columns: 28px 1fr; gap: 9px; align-items: start; }
+      .timeline-dot { display: grid; place-items: center; width: 24px; height: 24px; margin-top: 9px; border: 4px solid var(--teal-soft); border-radius: 50%; background: var(--teal); }
+      .timeline-step.corrected .timeline-dot { border-color: var(--gold-soft); background: var(--gold); }
+      .timeline-body { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+      .timeline-body h3 { margin: 0; font-size: .84rem; }
+      .timeline-body p { margin: 5px 0; color: #46566a; font-size: .75rem; }
+
+      .comparison-summary { display: grid; grid-template-columns: 104px 1fr; gap: 14px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(135deg,#f5fbfa,#fffaf0); }
+      .meter { --value: .75; display: grid; place-items: center; width: 96px; height: 96px; border-radius: 50%; background: conic-gradient(var(--teal) calc(var(--value)*1turn),#dfe8e9 0); }
+      .meter::before { content: ""; grid-area: 1/1; width: 69px; height: 69px; border-radius: 50%; background: #fff; }
+      .meter strong { z-index: 1; grid-area: 1/1; color: var(--navy); font-size: 1rem; }
+      .classification { margin: 0; font-size: 1rem; }
+      .classification.potential { color: var(--red); }
+      .comparison-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin-top: 10px; }
+      .decision-column { padding: 11px; border: 1px solid var(--line); border-radius: 11px; }
+      .decision-column h4 { margin: 6px 0; font-size: .78rem; }
+      .decision-column p, .reason-list, .difference-list { color: #46566a; font-size: .72rem; }
+      .reason-list, .difference-list { margin: 7px 0 0; padding-inline-start: 18px; }
+
+      .empty { display: grid; place-items: center; min-height: 280px; padding: 28px; text-align: center; color: var(--muted); }
+      .empty strong { display: block; margin-bottom: 4px; color: var(--navy); }
+      .loading { opacity: .58; pointer-events: none; }
+      .loading-bar { height: 3px; border-radius: 999px; background: linear-gradient(90deg,transparent,var(--gold),transparent); background-size: 200% 100%; animation: load 1s linear infinite; }
+      @keyframes load { to { background-position: -200% 0; } }
+      .footer { display: flex; justify-content: space-between; gap: 12px; margin: 13px 2px 0; color: var(--muted); font-size: .68rem; }
+
+      @media (max-width: 980px) { .filter-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } .procedure-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+      @media (max-width: 820px) {
+        .workspace { grid-template-columns: 1fr; }
+        .side-panel { position: static; order: -1; }
+        .stats { grid-template-columns: repeat(4,minmax(0,1fr)); }
+      }
+      @media (max-width: 640px) {
+        .app { padding: 9px; }
+        .hero { padding: 18px 14px; border-radius: 18px; }
+        .top-row { align-items: start; }
+        .brand-mark { width: 46px; height: 46px; flex-basis: 46px; }
+        .brand p { display: none; }
+        .language-wrap label { display: none; }
+        .search-box { grid-template-columns: 1fr; }
+        .filter-grid, .procedure-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+        .country-grid, .comparison-grid { grid-template-columns: 1fr; }
+        .main-panel { padding: 13px; }
+        .comparison-summary { grid-template-columns: 1fr; text-align: center; }
+        .meter { margin: auto; }
+        .status-line, .footer { flex-direction: column; align-items: start; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app" id="app">
+      <section class="hero">
+        <div class="top-row">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none">
+                <path d="M24 8v29M15 12h18M18 37h12" stroke="#E9C876" stroke-width="2.7" stroke-linecap="round"/>
+                <path d="M14.5 13 8 24h13l-6.5-11ZM33.5 13 27 24h13l-6.5-11Z" stroke="white" stroke-width="2.2" stroke-linejoin="round"/>
+                <path d="M8.5 25.5c1 3.2 3 4.8 6 4.8s5-1.6 6-4.8M27.5 25.5c1 3.2 3 4.8 6 4.8s5-1.6 6-4.8" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div><h1>Al‑Muhami Global</h1><p>المحامي العالمي · Multilingual legal intelligence</p></div>
+          </div>
+          <div class="language-wrap">
+            <label for="language-select" data-i18n="language">Language</label>
+            <select id="language-select" aria-label="Interface language">
+              <option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option>
+            </select>
+          </div>
+        </div>
+        <p class="hero-copy" data-i18n="hero">Move from jurisdiction to legal code, article, linked cases, every court level, and potentially divergent outcomes—without losing the source or procedural context.</p>
+        <form class="search-box" id="search-form">
+          <input id="search-input" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Search a legal issue, article, court, or fact pattern" />
+          <button class="primary" type="submit" data-i18n="search">Search globally</button>
+        </form>
+      </section>
+
+      <section class="path-panel" id="procedure-panel">
+        <div class="path-heading">
+          <div><h2 data-i18n="procedureAssistant">Procedural remedy and pleading assistant</h2><p data-i18n="procedureHelp">Choose the case track and exact decision before selecting a challenge method. The app hides incompatible routes.</p></div>
+          <span class="path-badge" data-i18n="eligibilityGate">Eligibility gate</span>
+        </div>
+        <div class="procedure-grid">
+          <div class="field"><label for="case-track-select" data-i18n="caseTrack">Case track</label><select id="case-track-select"></select></div>
+          <div class="field"><label for="decision-kind-select" data-i18n="decisionKind">Decision type</label><select id="decision-kind-select"></select></div>
+          <div class="field"><label for="challenge-method-select" data-i18n="challengeMethod">Challenge method</label><select id="challenge-method-select"></select></div>
+          <div class="field"><label for="filing-template-select" data-i18n="filingTemplate">Pleading template</label><select id="filing-template-select"></select></div>
+        </div>
+        <div class="filter-actions">
+          <button class="secondary" id="show-procedural-route" data-i18n="showRoute">Explain the compatible route</button>
+          <button class="ghost" id="open-filing-template" data-i18n="openTemplate">Open drafting checklist</button>
+        </div>
+        <div class="notice" id="procedure-notice" style="margin-top:12px" data-i18n="procedureNotice">The route depends on the exact judgment, standing, service, and current law. No deadline is guaranteed automatically.</div>
+      </section>
+
+      <section class="path-panel">
+        <div class="path-heading">
+          <div><h2 data-i18n="researchPath">Build your legal research path</h2><p data-i18n="pathHelp">Choose a country first, then narrow by code, article, court, topic, or stage.</p></div>
+          <span class="path-badge" data-i18n="sourceAware">Source-aware</span>
+        </div>
+        <div class="filter-grid">
+          <div class="field"><label for="country-select" data-i18n="country">Country</label><select id="country-select"></select></div>
+          <div class="field"><label for="law-select" data-i18n="law">Legal code</label><select id="law-select"></select></div>
+          <div class="field"><label for="article-input" data-i18n="article">Article number</label><input id="article-input" list="article-list" placeholder="e.g. 305" /><datalist id="article-list"></datalist></div>
+          <div class="field"><label for="court-select" data-i18n="court">Court</label><select id="court-select"></select></div>
+          <div class="field"><label for="topic-select" data-i18n="topic">Case topic</label><select id="topic-select"></select></div>
+          <div class="field"><label for="stage-select" data-i18n="stage">Procedural stage</label><select id="stage-select"></select></div>
+        </div>
+        <div class="filter-actions">
+          <button class="secondary" id="open-article" data-i18n="openArticle">Open article + cases</button>
+          <button class="ghost" id="find-cases" data-i18n="findCases">Find court cases</button>
+          <button class="ghost" id="find-divergence" data-i18n="findDivergence">Compare similar outcomes</button>
+          <button class="text-button" id="browse-laws" data-i18n="browseLaws">Browse this country's laws</button>
+        </div>
+        <div class="breadcrumb" id="breadcrumb"></div>
+      </section>
+
+      <div class="status-line">
+        <span id="status-text" data-i18n="loading">Loading the global legal catalog…</span>
+        <div class="legend">
+          <span class="legend-item"><i class="dot published"></i><span data-i18n="published">Published reference</span></span>
+          <span class="legend-item"><i class="dot demo"></i><span data-i18n="synthetic">Synthetic demonstration</span></span>
+          <span class="legend-item"><i class="dot catalog"></i><span data-i18n="catalogOnly">Catalog only</span></span>
+        </div>
+      </div>
+
+      <div class="workspace" id="workspace">
+        <section class="panel main-panel">
+          <div class="loading-bar" id="loading-bar" hidden></div>
+          <div id="content" class="empty"><div><strong>Al‑Muhami Global</strong><span data-i18n="loading">Loading the global legal catalog…</span></div></div>
+        </section>
+        <aside class="panel side-panel">
+          <div class="panel-heading"><div><h2 data-i18n="selectedCorpus">Selected corpus</h2><p id="selected-country-label">Iraq</p></div></div>
+          <div class="stats" id="stats"></div>
+          <div class="side-title" data-i18n="guidedDemo">Guided demo</div>
+          <div class="quick-list">
+            <button class="quick-action" data-demo="iraq-article" data-i18n="demoArticle">Iraq · Civil Procedure article 305</button>
+            <button class="quick-action" data-demo="heirship" data-i18n="demoHeirship">Anonymized cross-border heirship case</button>
+            <button class="quick-action" data-demo="france-article" data-i18n="demoFrance">France · Civil Code article 6</button>
+            <button class="quick-action" data-demo="coownership" data-i18n="demoCoownership">Iraq · Dissolution of co-ownership cases</button>
+            <button class="quick-action" data-demo="trace" data-i18n="demoTrace">Trial → appeal → cassation → correction</button>
+            <button class="quick-action" data-demo="compare" data-i18n="demoCompare">Potentially divergent cassation outcomes</button>
+            <button class="quick-action" data-demo="civil-third-party" data-i18n="demoThirdParty">Civil · third-party objection</button>
+            <button class="quick-action" data-demo="criminal-retrial" data-i18n="demoCriminalRetrial">Criminal · retrial eligibility</button>
+          </div>
+          <div class="side-title" data-i18n="legalNotice">Legal notice</div>
+          <div class="notice" id="legal-notice">Research assistant only. Verify the complete official text and procedural record.</div>
+        </aside>
+      </div>
+
+      <footer class="footer"><span>Al‑Muhami Global v0.4 · OpenAI Build Week</span><a href="/privacy" target="_blank" rel="noreferrer" data-i18n="privacy">Privacy and data provenance</a></footer>
+    </main>
+
+    <script type="module">
+      const i18n = {
+        en: { language:"Language", hero:"Move from jurisdiction to legal code, article, linked cases, every court level, and potentially divergent outcomes—without losing the source or procedural context.", search:"Search globally", searchPlaceholder:"Search a legal issue, article, court, or fact pattern", researchPath:"Build your legal research path", pathHelp:"Choose a country first, then narrow by code, article, court, topic, or stage.", sourceAware:"Source-aware", country:"Country", law:"Legal code", article:"Article number", court:"Court", topic:"Case topic", stage:"Procedural stage", openArticle:"Open article + cases", findCases:"Find court cases", findDivergence:"Compare similar outcomes", browseLaws:"Browse this country's laws", loading:"Loading the global legal catalog…", published:"Published reference", synthetic:"Synthetic demonstration", catalogOnly:"Catalog only", selectedCorpus:"Selected corpus", guidedDemo:"Guided demo", demoArticle:"Iraq · Civil Procedure article 305", demoHeirship:"Anonymized cross-border heirship case", demoFrance:"France · Civil Code article 6", demoCoownership:"Iraq · Dissolution of co-ownership cases", demoTrace:"Trial → appeal → cassation → correction", demoCompare:"Potentially divergent cassation outcomes", legalNotice:"Legal notice", privacy:"Privacy and data provenance", allLaws:"All legal codes", allCourts:"All courts", allTopics:"All case topics", allStages:"All stages", laws:"laws", articles:"articles", cases:"cases", decisions:"demo decisions", chooseArticle:"Choose a law and enter an article number.", notInCorpus:"This article is not yet in the pilot corpus.", originalText:"Original legal text", relatedCases:"Cases linked to this article", relatedDecisions:"Court decisions", noRelatedCases:"No linked cases have been ingested yet.", catalogTitle:"Legal codes", courtCases:"Court cases and procedural paths", noCases:"No cases match these filters in the current pilot corpus.", trace:"Trace full case", results:"Search results", potential:"Potential jurisprudential divergence", details:"Details and source", fictionalParties:"Fictional parties", legalQuestions:"Legal questions" },
+        ar: { language:"اللغة", hero:"انتقل من الدولة إلى القانون والمادة والدعاوى المرتبطة ودرجات التقاضي والقرارات المختلفة المحتملة، مع الحفاظ على المصدر والسياق الإجرائي.", search:"بحث عالمي", searchPlaceholder:"ابحث عن مسألة قانونية أو مادة أو محكمة أو وقائع", researchPath:"أنشئ مسار البحث القانوني", pathHelp:"اختر الدولة أولاً، ثم القانون أو المادة أو المحكمة أو موضوع الدعوى أو المرحلة.", sourceAware:"موثّق المصدر", country:"الدولة", law:"القانون", article:"رقم المادة", court:"المحكمة", topic:"موضوع الدعوى", stage:"مرحلة التقاضي", openArticle:"فتح المادة والدعاوى", findCases:"عرض دعاوى المحاكم", findDivergence:"مقارنة القرارات المتشابهة", browseLaws:"تصفح قوانين الدولة", loading:"جاري تحميل الفهرس القانوني العالمي…", published:"مرجع منشور", synthetic:"بيانات تجريبية", catalogOnly:"فهرسة فقط", selectedCorpus:"المجموعة المختارة", guidedDemo:"عرض إرشادي", demoArticle:"العراق · المادة 305 من قانون المرافعات المدنية", demoHeirship:"قضية قسام عابر للحدود بأسماء افتراضية", demoFrance:"فرنسا · المادة 6 من القانون المدني", demoCoownership:"العراق · دعاوى إزالة الشيوع", demoTrace:"بداءة ← استئناف ← تمييز ← تصحيح", demoCompare:"قرارات تمييز مختلفة محتملة", legalNotice:"تنبيه قانوني", privacy:"الخصوصية ومصادر البيانات", allLaws:"كل القوانين", allCourts:"كل المحاكم", allTopics:"كل موضوعات الدعاوى", allStages:"كل المراحل", laws:"قوانين", articles:"مواد", cases:"دعاوى", decisions:"قرارات تجريبية", chooseArticle:"اختر قانوناً وأدخل رقم المادة.", notInCorpus:"هذه المادة غير مضافة بعد إلى النسخة التجريبية.", originalText:"النص القانوني الأصلي", relatedCases:"الدعاوى المرتبطة بالمادة", relatedDecisions:"القرارات القضائية", noRelatedCases:"لم تُربط دعاوى بهذه المادة بعد.", catalogTitle:"قوانين الدولة", courtCases:"الدعاوى ومسارات التقاضي", noCases:"لا توجد دعاوى مطابقة لهذه الفلاتر في النسخة الحالية.", trace:"تتبّع الدعوى كاملة", results:"نتائج البحث", potential:"اختلاف قضائي محتمل", details:"التفاصيل والمصدر", fictionalParties:"الأطراف بأسماء افتراضية", legalQuestions:"المسائل القانونية" },
+        fr: { language:"Langue", hero:"Passez du pays au code, à l’article, aux affaires liées, à chaque degré de juridiction et aux divergences potentielles, sans perdre la source ni le contexte procédural.", search:"Recherche mondiale", searchPlaceholder:"Rechercher une question, un article, une juridiction ou des faits", researchPath:"Construisez votre parcours juridique", pathHelp:"Choisissez d’abord un pays, puis un code, un article, une juridiction, un thème ou un degré.", sourceAware:"Sources traçables", country:"Pays", law:"Code juridique", article:"Numéro d’article", court:"Juridiction", topic:"Thème de l’affaire", stage:"Degré de procédure", openArticle:"Ouvrir l’article + affaires", findCases:"Trouver les affaires", findDivergence:"Comparer les décisions", browseLaws:"Parcourir les lois du pays", loading:"Chargement du catalogue juridique mondial…", published:"Référence publiée", synthetic:"Démonstration synthétique", catalogOnly:"Catalogue seulement", selectedCorpus:"Corpus sélectionné", guidedDemo:"Démonstration guidée", demoArticle:"Irak · Article 305 de la procédure civile", demoHeirship:"Affaire successorale transfrontalière anonymisée", demoFrance:"France · Article 6 du Code civil", demoCoownership:"Irak · Partage de l’indivision", demoTrace:"Première instance → appel → cassation → rectification", demoCompare:"Divergences potentielles en cassation", legalNotice:"Avertissement juridique", privacy:"Vie privée et provenance", allLaws:"Tous les codes", allCourts:"Toutes les juridictions", allTopics:"Tous les thèmes", allStages:"Tous les degrés", laws:"codes", articles:"articles", cases:"affaires", decisions:"décisions démo", chooseArticle:"Choisissez un code et saisissez un numéro d’article.", notInCorpus:"Cet article n’est pas encore dans le corpus pilote.", originalText:"Texte juridique original", relatedCases:"Affaires liées à cet article", relatedDecisions:"Décisions judiciaires", noRelatedCases:"Aucune affaire liée n’a encore été importée.", catalogTitle:"Codes juridiques", courtCases:"Affaires et parcours procéduraux", noCases:"Aucune affaire ne correspond à ces filtres dans le corpus pilote.", trace:"Suivre toute l’affaire", results:"Résultats", potential:"Divergence jurisprudentielle potentielle", details:"Détails et source", fictionalParties:"Parties fictives", legalQuestions:"Questions juridiques" },
+        es: { language:"Idioma", hero:"Pase del país al código, artículo, casos vinculados, todas las instancias y posibles divergencias, conservando la fuente y el contexto procesal.", search:"Búsqueda global", searchPlaceholder:"Buscar una cuestión, artículo, tribunal o hechos", researchPath:"Construya su ruta de investigación", pathHelp:"Elija primero un país y después código, artículo, tribunal, tema o instancia.", sourceAware:"Fuentes trazables", country:"País", law:"Código legal", article:"Número de artículo", court:"Tribunal", topic:"Tema del caso", stage:"Instancia procesal", openArticle:"Abrir artículo + casos", findCases:"Buscar casos", findDivergence:"Comparar decisiones", browseLaws:"Ver leyes del país", loading:"Cargando el catálogo jurídico global…", published:"Referencia publicada", synthetic:"Demostración sintética", catalogOnly:"Solo catálogo", selectedCorpus:"Corpus seleccionado", guidedDemo:"Demostración guiada", demoArticle:"Irak · Artículo 305 de Procedimiento Civil", demoHeirship:"Caso sucesorio transfronterizo anonimizado", demoFrance:"Francia · Artículo 6 del Código Civil", demoCoownership:"Irak · División de copropiedad", demoTrace:"Primera instancia → apelación → casación → corrección", demoCompare:"Posibles divergencias en casación", legalNotice:"Aviso legal", privacy:"Privacidad y procedencia", allLaws:"Todos los códigos", allCourts:"Todos los tribunales", allTopics:"Todos los temas", allStages:"Todas las instancias", laws:"leyes", articles:"artículos", cases:"casos", decisions:"decisiones demo", chooseArticle:"Elija una ley e introduzca un número de artículo.", notInCorpus:"Este artículo aún no está en el corpus piloto.", originalText:"Texto legal original", relatedCases:"Casos vinculados al artículo", relatedDecisions:"Decisiones judiciales", noRelatedCases:"Aún no se han incorporado casos vinculados.", catalogTitle:"Códigos legales", courtCases:"Casos y rutas procesales", noCases:"No hay casos que coincidan con estos filtros.", trace:"Seguir el caso completo", results:"Resultados", potential:"Posible divergencia jurisprudencial", details:"Detalles y fuente", fictionalParties:"Partes ficticias", legalQuestions:"Cuestiones jurídicas" }
+      };
+
+      Object.assign(i18n.en, { procedureAssistant:"Procedural remedy and pleading assistant", procedureHelp:"Choose the case track and exact decision before selecting a challenge method. Incompatible routes are hidden.", eligibilityGate:"Eligibility gate", caseTrack:"Case track", decisionKind:"Decision type", challengeMethod:"Challenge method", filingTemplate:"Pleading template", showRoute:"Explain the compatible route", openTemplate:"Open drafting checklist", procedureNotice:"The route depends on the exact judgment, standing, service, and current law. No deadline is guaranteed automatically.", chooseTrack:"Choose a case track", chooseDecision:"Choose the exact decision type", chooseMethod:"Choose a compatible method", chooseTemplate:"Choose a pleading template", routeUnavailable:"No compatible route is encoded for this combination.", eligibilityChecks:"Eligibility questions", exclusions:"When not to use it", filingAuthority:"Where it is directed", deadline:"Deadline warning", legalBasis:"Legal basis", requiredSections:"Required sections", focusSections:"Route-specific focus", requiredAttachments:"Attachment checklist", validationQuestions:"Questions before drafting", draftPolicy:"Drafting boundary", privacyNotice:"Prototype privacy", demoThirdParty:"Civil · third-party objection", demoCriminalRetrial:"Criminal · retrial eligibility" });
+      Object.assign(i18n.ar, { procedureAssistant:"مساعد الإجراء والطعن وكتابة العريضة", procedureHelp:"اختر نوع الدعوى والقرار المحدد قبل طريق الطعن؛ يخفي التطبيق الطرق غير المتوافقة.", eligibilityGate:"بوابة القابلية", caseTrack:"نوع الدعوى", decisionKind:"نوع الحكم أو القرار", challengeMethod:"طريق الطعن أو التظلم", filingTemplate:"نموذج العريضة", showRoute:"شرح الطريق المتوافق", openTemplate:"فتح قائمة الصياغة", procedureNotice:"يتوقف الطريق على الحكم والصفة والتبليغ والنص النافذ؛ لا يضمن التطبيق أي مدة تلقائياً.", chooseTrack:"اختر نوع الدعوى", chooseDecision:"اختر نوع الحكم أو القرار بدقة", chooseMethod:"اختر طريقاً متوافقاً", chooseTemplate:"اختر نموذج عريضة", routeUnavailable:"لا يوجد طريق مشفّر يطابق هذه التركيبة.", eligibilityChecks:"أسئلة القابلية", exclusions:"متى لا يُستخدم", filingAuthority:"الجهة التي يوجّه إليها", deadline:"تنبيه المدة", legalBasis:"السند القانوني", requiredSections:"أقسام العريضة", focusSections:"نقاط التركيز الخاصة", requiredAttachments:"قائمة المرفقات", validationQuestions:"أسئلة قبل الصياغة", draftPolicy:"حدود الصياغة", privacyNotice:"خصوصية النموذج", demoThirdParty:"مدني · اعتراض الغير", demoCriminalRetrial:"جزائي · شروط إعادة المحاكمة" });
+      Object.assign(i18n.fr, { procedureAssistant:"Assistant de recours et de rédaction", procedureHelp:"Choisissez le type d’affaire et la décision exacte avant le recours ; les voies incompatibles sont masquées.", eligibilityGate:"Contrôle de recevabilité", caseTrack:"Type d’affaire", decisionKind:"Type de décision", challengeMethod:"Voie de recours", filingTemplate:"Modèle d’acte", showRoute:"Expliquer la voie compatible", openTemplate:"Ouvrir la liste de rédaction", procedureNotice:"La voie dépend de la décision, de la qualité, de la signification et du droit actuel. Aucun délai n’est garanti automatiquement.", chooseTrack:"Choisir le type d’affaire", chooseDecision:"Choisir la décision exacte", chooseMethod:"Choisir une voie compatible", chooseTemplate:"Choisir un modèle", routeUnavailable:"Aucune voie encodée ne correspond.", eligibilityChecks:"Questions de recevabilité", exclusions:"Quand ne pas l’utiliser", filingAuthority:"Autorité destinataire", deadline:"Alerte de délai", legalBasis:"Fondement juridique", requiredSections:"Rubriques requises", focusSections:"Points propres à la voie", requiredAttachments:"Liste des pièces", validationQuestions:"Questions avant rédaction", draftPolicy:"Limite de rédaction", privacyNotice:"Confidentialité du prototype", demoThirdParty:"Civil · tierce opposition", demoCriminalRetrial:"Pénal · recevabilité de la révision" });
+      Object.assign(i18n.es, { procedureAssistant:"Asistente de recursos y escritos", procedureHelp:"Elija el tipo de asunto y la decisión exacta antes del recurso; se ocultan las vías incompatibles.", eligibilityGate:"Control de procedencia", caseTrack:"Tipo de asunto", decisionKind:"Tipo de decisión", challengeMethod:"Vía de impugnación", filingTemplate:"Plantilla de escrito", showRoute:"Explicar la vía compatible", openTemplate:"Abrir lista de redacción", procedureNotice:"La vía depende de la decisión, legitimación, notificación y ley vigente. Ningún plazo se garantiza automáticamente.", chooseTrack:"Elegir tipo de asunto", chooseDecision:"Elegir decisión exacta", chooseMethod:"Elegir vía compatible", chooseTemplate:"Elegir plantilla", routeUnavailable:"No hay vía codificada compatible.", eligibilityChecks:"Preguntas de procedencia", exclusions:"Cuándo no usarla", filingAuthority:"Autoridad destinataria", deadline:"Alerta de plazo", legalBasis:"Fundamento legal", requiredSections:"Secciones requeridas", focusSections:"Enfoque específico", requiredAttachments:"Lista de anexos", validationQuestions:"Preguntas antes de redactar", draftPolicy:"Límite de redacción", privacyNotice:"Privacidad del prototipo", demoThirdParty:"Civil · oposición de tercero", demoCriminalRetrial:"Penal · procedencia de revisión" });
+
+      const state = { language:"en", countryCode:"IQ", jurisdictions:null, catalog:null, procedural:null, pending:new Map(), requestId:0 };
+      const $ = (selector) => document.querySelector(selector);
+      const content = $("#content");
+      const workspace = $("#workspace");
+      const loadingBar = $("#loading-bar");
+      const statusText = $("#status-text");
+      const legalNotice = $("#legal-notice");
+      const languageSelect = $("#language-select");
+      const countrySelect = $("#country-select");
+      const lawSelect = $("#law-select");
+      const articleInput = $("#article-input");
+      const articleList = $("#article-list");
+      const courtSelect = $("#court-select");
+      const topicSelect = $("#topic-select");
+      const stageSelect = $("#stage-select");
+      const caseTrackSelect = $("#case-track-select");
+      const decisionKindSelect = $("#decision-kind-select");
+      const challengeMethodSelect = $("#challenge-method-select");
+      const filingTemplateSelect = $("#filing-template-select");
+      const procedureNotice = $("#procedure-notice");
+
+      const t = (key) => i18n[state.language]?.[key] ?? i18n.en[key] ?? key;
+      const esc = (value="") => String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+      const percent = (value) => `${Math.round(Number(value || 0) * 100)}%`;
+      const option = (value, label) => `<option value="${esc(value)}">${esc(label)}</option>`;
+      const selectedCountry = () => state.jurisdictions?.countries?.find((country) => country.code === state.countryCode);
+      const selectedLaw = () => state.catalog?.laws?.find((law) => law.id === lawSelect.value);
+
+      function translateUi() {
+        document.documentElement.lang = state.language;
+        document.documentElement.dir = state.language === "ar" ? "rtl" : "ltr";
+        document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = t(node.dataset.i18n); });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
+        fillStageFilter();
+      }
+
+      function setLoading(active, label=t("loading")) {
+        workspace.classList.toggle("loading", active);
+        loadingBar.hidden = !active;
+        if (active) statusText.textContent = label;
+      }
+
+      function isEmbedded() { return window.parent !== window || Boolean(window.openai); }
+      function unwrap(result) {
+        if (!result) return null;
+        if (result.structuredContent) return result.structuredContent;
+        const text = result.content?.find?.((item) => item.type === "text")?.text;
+        if (text) { try { return JSON.parse(text); } catch { return text; } }
+        return result;
+      }
+
+      window.addEventListener("message", (event) => {
+        const message = event.data;
+        if (!message || message.jsonrpc !== "2.0") return;
+        if (message.id && state.pending.has(message.id)) {
+          const { resolve, reject } = state.pending.get(message.id);
+          state.pending.delete(message.id);
+          if (message.error) reject(new Error(message.error.message || "Tool call failed"));
+          else resolve(unwrap(message.result));
+        }
+        if (message.method === "ui/notifications/tool-result") {
+          const payload = message.params?.structuredContent ?? message.params?.result?.structuredContent;
+          if (payload) renderPayload(payload);
+        }
+      });
+
+      async function callBridge(name, args) {
+        if (window.openai?.callTool) return unwrap(await window.openai.callTool(name, args));
+        const id = `al-muhami-global-${++state.requestId}`;
+        const request = new Promise((resolve, reject) => state.pending.set(id, { resolve, reject }));
+        window.parent.postMessage({ jsonrpc:"2.0", id, method:"tools/call", params:{ name, arguments:args } }, "*");
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Tool request timed out")), 20000));
+        return Promise.race([request, timeout]);
+      }
+
+      function queryString(args) {
+        const params = new URLSearchParams();
+        Object.entries(args).forEach(([key,value]) => { if (value !== undefined && value !== null && value !== "") params.set(key, String(value)); });
+        return params.toString();
+      }
+
+      async function standalone(name, args) {
+        if (name === "browse_jurisdictions") return { view:"jurisdictions", title:"Countries", data: await fetch(`/api/jurisdictions?${queryString(args)}`).then(checkJson) };
+        if (name === "browse_legal_catalog") return { view:"catalog", title:t("catalogTitle"), data: await fetch(`/api/catalog?${queryString(args)}`).then(checkJson) };
+        if (name === "get_law_article") return { view:"article-cases", title:`Article ${args.articleNumber}`, data: await fetch(`/api/articles/${encodeURIComponent(args.lawId)}/${encodeURIComponent(args.articleNumber)}?${queryString({countryCode:args.countryCode,language:args.language})}`).then(checkJson) };
+        if (name === "browse_court_cases") return { view:"court-cases", title:t("courtCases"), data: await fetch(`/api/cases?${queryString(args)}`).then(checkJson) };
+        if (name === "browse_procedural_routes") return { view:"procedural-routes", title:t("procedureAssistant"), data: await fetch(`/api/procedural-routes?${queryString(args)}`).then(checkJson) };
+        if (name === "get_filing_template") return { view:"filing-template", title:t("filingTemplate"), data: await fetch(`/api/filing-templates/${encodeURIComponent(args.templateId)}?${queryString({countryCode:args.countryCode,language:args.language})}`).then(checkJson) };
+        if (name === "trace_case_path") return { view:"case-trace", title:t("trace"), data: await fetch(`/api/cases/${encodeURIComponent(args.caseId)}`).then(checkJson) };
+        if (name === "get_legal_source") return { view:"source", title:t("details"), data: await fetch(`/api/sources/${encodeURIComponent(args.id)}?language=${state.language}`).then(checkJson) };
+        const route = name === "search_legal_materials" ? "/api/search" : name === "compare_decisions" ? "/api/compare" : "/api/divergence";
+        const response = await fetch(route, { method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(args) });
+        const data = await checkJson(response);
+        return { view:name === "search_legal_materials" ? "search" : name === "compare_decisions" ? "comparison" : "divergence", title:name === "search_legal_materials" ? t("results") : t("potential"), data };
+      }
+
+      async function checkJson(response) { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); }
+
+      async function requestAction(name, args={}, { render=true }={}) {
+        setLoading(true);
+        try {
+          const payload = isEmbedded() ? await callBridge(name, args) : await standalone(name, args);
+          if (render) renderPayload(payload);
+          return payload?.data ?? payload;
+        } catch (error) {
+          content.className = "empty";
+          content.innerHTML = `<div><strong>Unable to complete the request</strong><span>${esc(error.message)}</span></div>`;
+          statusText.textContent = error.message;
+          return null;
+        } finally { setLoading(false); }
+      }
+
+      function updateFilters() {
+        const country = selectedCountry();
+        $("#selected-country-label").textContent = country ? `${country.flag} ${country.name}` : state.countryCode;
+        countrySelect.innerHTML = (state.jurisdictions?.countries ?? []).map((item) => option(item.code, `${item.flag} ${item.name}`)).join("");
+        countrySelect.value = state.countryCode;
+        lawSelect.innerHTML = option("", t("allLaws")) + (state.catalog?.laws ?? []).map((law) => option(law.id, law.title)).join("");
+        courtSelect.innerHTML = option("", t("allCourts")) + (country?.courtTypes ?? []).map((court) => option(court.id, court.name)).join("");
+        topicSelect.innerHTML = option("", t("allTopics")) + (country?.caseTopics ?? []).map((topic) => option(topic.id, topic.name)).join("");
+        updateArticleList();
+        updateBreadcrumb();
+      }
+
+      function updateProceduralFilters(data, preferred={}) {
+        state.procedural = data;
+        const tracks = data?.tracks ?? [];
+        const trackId = preferred.trackId ?? data?.filters?.trackId ?? caseTrackSelect.value ?? "";
+        caseTrackSelect.innerHTML = option("", t("chooseTrack")) + tracks.map((track) => option(track.id, track.name)).join("");
+        caseTrackSelect.value = tracks.some((track) => track.id === trackId) ? trackId : "";
+
+        const kinds = data?.decisionKinds ?? [];
+        const decisionKindId = preferred.decisionKindId ?? data?.filters?.decisionKindId ?? "";
+        decisionKindSelect.innerHTML = option("", t("chooseDecision")) + kinds.map((kind) => option(kind.id, kind.name)).join("");
+        decisionKindSelect.value = kinds.some((kind) => kind.id === decisionKindId) ? decisionKindId : "";
+
+        const methods = data?.methods ?? [];
+        const methodId = preferred.methodId ?? data?.filters?.methodId ?? "";
+        challengeMethodSelect.innerHTML = option("", t("chooseMethod")) + methods.map((method) => option(method.id, method.name)).join("");
+        challengeMethodSelect.value = methods.some((method) => method.id === methodId) ? methodId : "";
+
+        const templates = data?.filingTemplates ?? [];
+        const templateId = preferred.templateId ?? "";
+        filingTemplateSelect.innerHTML = option("", t("chooseTemplate")) + templates.map((template) => option(template.id, template.title)).join("");
+        filingTemplateSelect.value = templates.some((template) => template.id === templateId) ? templateId : "";
+
+        const disabled = !data?.available;
+        [caseTrackSelect,decisionKindSelect,challengeMethodSelect,filingTemplateSelect].forEach((select) => { select.disabled = disabled; });
+        procedureNotice.textContent = data?.notAvailableReason ?? data?.notice ?? t("procedureNotice");
+      }
+
+      async function refreshProceduralFilters({ trackId=caseTrackSelect.value || "civil", decisionKindId="", methodId="", render=false, templateId="" }={}) {
+        const data = await requestAction("browse_procedural_routes", {
+          countryCode:state.countryCode,
+          trackId:trackId || undefined,
+          decisionKindId:decisionKindId || undefined,
+          methodId:methodId || undefined,
+          language:state.language
+        }, { render });
+        if (data) {
+          const routeTemplateId = methodId ? data.routes?.[0]?.templateId : "";
+          updateProceduralFilters(data, { trackId, decisionKindId, methodId, templateId:templateId || routeTemplateId });
+        }
+        return data;
+      }
+
+      function updateArticleList() {
+        articleList.innerHTML = (selectedLaw()?.articles ?? []).map((article) => `<option value="${esc(article.number)}"></option>`).join("");
+      }
+
+      function fillStageFilter() {
+        const current = stageSelect.value;
+        const stages = [{id:"",label:t("allStages")},{id:"foreign-record",label:state.language === "ar" ? "مستند قضائي أجنبي" : "Foreign judicial record"},{id:"trial",label:state.language === "ar" ? "بداءة / أول درجة" : "Trial / first instance"},{id:"appeal",label:state.language === "ar" ? "استئناف" : "Appeal"},{id:"cassation",label:state.language === "ar" ? "تمييز / نقض" : "Cassation"},{id:"correction",label:state.language === "ar" ? "تصحيح القرار" : "Correction / review"}];
+        stageSelect.innerHTML = stages.map((stage) => option(stage.id, stage.label)).join("");
+        stageSelect.value = stages.some((stage) => stage.id === current) ? current : "";
+      }
+
+      function updateBreadcrumb() {
+        const country = selectedCountry();
+        const law = selectedLaw();
+        const parts = [country ? `${country.flag} ${country.name}` : state.countryCode];
+        if (law) parts.push(law.title);
+        if (articleInput.value.trim()) parts.push(`${t("article")} ${articleInput.value.trim()}`);
+        const court = courtSelect.selectedOptions[0]; if (court?.value) parts.push(court.textContent);
+        const topic = topicSelect.selectedOptions[0]; if (topic?.value) parts.push(topic.textContent);
+        const stage = stageSelect.selectedOptions[0]; if (stage?.value) parts.push(stage.textContent);
+        $("#breadcrumb").innerHTML = parts.map((part) => `<span class="crumb">${esc(part)}</span>`).join("");
+      }
+
+      function updateStats(stats={}) {
+        $("#stats").innerHTML = `<div class="stat"><strong>${esc(stats.laws ?? 0)}</strong><span>${t("laws")}</span></div><div class="stat"><strong>${esc(stats.embeddedArticles ?? 0)}</strong><span>${t("articles")}</span></div><div class="stat"><strong>${esc(selectedCountry()?.caseCount ?? 0)}</strong><span>${t("cases")}</span></div><div class="stat"><strong>${esc(stats.syntheticDemoDecisions ?? 0)}</strong><span>${t("decisions")}</span></div>`;
+      }
+
+      function heading(title, subtitle="") { return `<div class="panel-heading"><div><h2>${esc(title)}</h2><p>${esc(subtitle)}</p></div></div>`; }
+      function dataBadge(isSynthetic) { return `<span class="badge ${isSynthetic ? "demo" : "published"}">${isSynthetic ? t("synthetic") : t("published")}</span>`; }
+
+      function renderPayload(payload) {
+        if (!payload) return;
+        const data = payload.data ?? payload;
+        if (payload.notice || data.notice) legalNotice.textContent = payload.notice ?? data.notice;
+        statusText.textContent = payload.title ?? "Al‑Muhami Global";
+        const renderers = {
+          jurisdictions: () => renderJurisdictions(data), catalog: () => renderCatalog(data), "article-cases": () => renderArticle(data), "court-cases": () => renderCourtCases(data), "procedural-routes": () => renderProceduralRoutes(data), "filing-template": () => renderFilingTemplate(data), search: () => renderSearch(data), "case-trace": () => renderTrace(data), comparison: () => renderComparison(data), divergence: () => renderDivergence(data), source: () => renderSource(data)
+        };
+        (renderers[payload.view] ?? (() => renderSource(data)))();
+      }
+
+      function renderOverview(data) {
+        state.jurisdictions = data.jurisdictions;
+        state.catalog = data.catalog;
+        state.procedural = data.proceduralRoutes;
+        updateFilters(); updateStats(data.catalog?.stats);
+        if (data.proceduralRoutes) updateProceduralFilters(data.proceduralRoutes, { trackId:data.proceduralRoutes.filters?.trackId ?? "civil" });
+        legalNotice.textContent = data.project?.legalNotice ?? legalNotice.textContent;
+        statusText.textContent = data.project?.corpusNotice ?? "Ready";
+        renderJurisdictions(data.jurisdictions);
+      }
+
+      function renderJurisdictions(data) {
+        if (data?.countries) state.jurisdictions = data;
+        content.className = "";
+        content.innerHTML = `${heading("Al‑Muhami Global", t("pathHelp"))}<div class="country-grid">${(data.countries ?? []).map((country) => `<article class="card"><div class="card-top"><div><h3>${esc(country.name)}</h3><div class="subtitle">${esc(country.status)}</div></div><span class="country-flag">${country.flag}</span></div><p class="snippet">${country.lawCount} ${t("laws")} · ${country.embeddedArticleCount} ${t("articles")} · ${country.caseCount} ${t("cases")}</p><div class="badges">${country.courtTypes.slice(0,3).map((court) => `<span class="badge">${esc(court.name)}</span>`).join("")}</div><div class="card-actions"><button class="text-button" data-country="${country.code}">${t("browseLaws")}</button></div></article>`).join("")}</div><div class="notice" style="margin-top:12px">${esc(data.notice ?? "")}</div>`;
+      }
+
+      function renderCatalog(data) {
+        state.catalog = data; state.countryCode = data.countryCode; updateFilters(); updateStats(data.stats);
+        content.className = "";
+        content.innerHTML = `${heading(`${data.country} · ${t("catalogTitle")}`, `${data.laws.length} ${t("laws")}`)}<div class="cards">${data.laws.map((law) => `<article class="card"><div class="card-top"><div><h3>${esc(law.title)}</h3><div class="subtitle">${esc(law.category)}${law.number ? ` · No. ${law.number} (${law.year})` : law.year ? ` · ${law.year}` : ""}</div></div><span class="badge ${law.articleCount ? "published" : "warning"}">${law.articleCount} ${t("articles")}</span></div><p class="snippet">${esc(law.status)}</p><div class="badges"><span class="badge">${law.articleCount ? t("originalText") : t("catalogOnly")}</span></div><div class="card-actions"><button class="text-button" data-law="${esc(law.id)}">${law.articleCount ? t("openArticle") : t("details")}</button><button class="text-button" data-source="${esc(law.id)}">${t("details")}</button></div></article>`).join("")}</div>`;
+      }
+
+      function renderArticle(data) {
+        content.className = "";
+        if (!data.found) {
+          content.innerHTML = `${heading(`${data.law?.title ?? "Law"} · ${t("article")} ${data.articleNumber}`)}<div class="notice">${esc(data.notice ?? t("notInCorpus"))}</div>${data.availableArticles?.length ? `<p class="snippet">Available: ${data.availableArticles.map(esc).join(", ")}</p>` : ""}`;
+          return;
+        }
+        const article = data.article;
+        content.innerHTML = `${heading(`${data.law.title} · ${t("article")} ${article.number}`, `${t("originalText")} · ${article.displayedLanguage}`)}<article class="card"><div class="badges"><span class="badge published">${t("published")}</span><span class="badge">${article.translationAvailable ? `Language: ${article.displayedLanguage}` : `Original only: ${article.displayedLanguage}`}</span></div><div class="article-box"><h4>${t("article")} ${esc(article.number)}</h4><p dir="auto">${esc(article.text)}</p></div><p class="snippet">${esc(article.verification)}</p><div class="card-actions">${(data.sources ?? []).map((source) => `<a class="text-button" href="${esc(source.url)}" target="_blank" rel="noreferrer">${esc(source.title)}</a>`).join("")}</div></article><div style="height:10px"></div>${heading(t("relatedCases"), `${data.relatedCases.length} ${t("cases")} · ${data.relatedDecisions.length} ${t("relatedDecisions")}`)}${data.relatedCases.length ? `<div class="cards">${data.relatedCases.map(caseCard).join("")}</div>` : `<div class="notice">${t("noRelatedCases")}</div>`}${data.relatedDecisions.length ? `<div class="cards" style="margin-top:10px">${data.relatedDecisions.map((decision) => `<article class="card"><div class="card-top"><div><h3>${esc(decision.court)}</h3><div class="subtitle">${esc(decision.displayNumber)} · ${esc(decision.stage)} · ${esc(decision.date)}</div></div>${dataBadge(decision.isSynthetic)}</div><p class="snippet"><strong>Facts:</strong> ${esc(decision.factSummary)}<br><strong>Outcome:</strong> ${esc(decision.outcome)}</p><div class="card-actions">${decision.caseId ? `<button class="text-button" data-trace="${esc(decision.caseId)}">${t("trace")}</button>` : ""}</div></article>`).join("")}</div>` : ""}`;
+      }
+
+      function caseCard(caseItem) {
+        const stages = caseItem.timelineStages ?? [];
+        return `<article class="card"><div class="card-top"><div><h3>${esc(caseItem.title)}</h3><div class="subtitle">${esc(caseItem.topic)} · ${esc(caseItem.courtType ?? "")}</div></div>${dataBadge(caseItem.isSynthetic)}</div><p class="snippet">${esc(caseItem.dataQuality)}</p>${stages.length ? `<div class="badges">${stages.map((stage) => `<span class="badge">${esc(stage.stage)}</span>`).join("")}</div>` : ""}<div class="card-actions"><button class="text-button" data-trace="${esc(caseItem.id)}">${t("trace")}</button></div></article>`;
+      }
+
+      function renderCourtCases(data) {
+        content.className = "";
+        content.innerHTML = `${heading(`${data.country} · ${t("courtCases")}`, `${data.totalMatches} ${t("cases")}`)}${data.cases.length ? `<div class="cards">${data.cases.map(caseCard).join("")}</div>` : `<div class="empty"><div><strong>${t("noCases")}</strong><span>${esc(data.notice)}</span></div></div>`}`;
+      }
+
+      function renderSearch(data) {
+        const results = data.results ?? [];
+        content.className = "";
+        content.innerHTML = `${heading(`${t("results")}: ${data.query}`, `${data.totalMatches} matches`)}${results.length ? `<div class="cards">${results.map((item) => `<article class="card"><div class="card-top"><div><h3>${esc(item.title)}</h3><div class="subtitle">${esc(item.subtitle)}</div></div><span class="badge">${percent(item.score)}</span></div><p class="snippet">${esc(item.snippet)}</p><div class="badges">${(item.badges ?? []).map((badge) => `<span class="badge ${item.isSynthetic ? "demo" : "published"}">${esc(badge)}</span>`).join("")}</div><div class="card-actions">${item.type === "case" || item.caseId ? `<button class="text-button" data-trace="${esc(item.type === "case" ? item.id : item.caseId)}">${t("trace")}</button>` : ""}<button class="text-button" data-source="${esc(item.id)}">${t("details")}</button></div></article>`).join("")}</div>` : `<div class="empty"><strong>${t("noCases")}</strong></div>`}`;
+      }
+
+      function renderTrace(data) {
+        if (!data?.case) { content.innerHTML = `<div class="empty"><strong>Case path unavailable</strong></div>`; return; }
+        content.className = "";
+        const parties = Object.values(data.case.parties ?? {});
+        const questions = data.case.legalQuestions ?? [];
+        const caseContext = parties.length || questions.length ? `<article class="card" style="margin:10px 0"><div class="comparison-grid">${parties.length ? `<section class="decision-column"><h4>${t("fictionalParties")}</h4><ul class="reason-list">${parties.map((party) => `<li>${esc(party)}</li>`).join("")}</ul></section>` : ""}${questions.length ? `<section class="decision-column"><h4>${t("legalQuestions")}</h4><ul class="reason-list">${questions.map((question) => `<li>${esc(question)}</li>`).join("")}</ul></section>` : ""}</div></article>` : "";
+        content.innerHTML = `${heading(data.case.title, `${data.case.topic} · ${data.case.courtType}`)}<div class="notice">${esc(data.notice)}</div>${caseContext}<div class="timeline">${data.timeline.map((decision) => `<article class="timeline-step ${decision.corrects ? "corrected" : ""}"><span class="timeline-dot"></span><div class="timeline-body"><div class="card-top"><div><h3>${esc(decision.stage)} · ${esc(decision.title)}</h3><div class="subtitle">${esc(decision.court)} · ${esc(decision.displayNumber)} · ${esc(decision.date)}</div></div>${dataBadge(decision.isSynthetic)}</div><p><strong>Facts:</strong> ${esc(decision.factSummary)}</p><p><strong>Reasoning:</strong> ${esc(decision.reasoningSummary)}</p><p><strong>Outcome:</strong> ${esc(decision.outcome)}</p><div class="card-actions"><button class="text-button" data-source="${esc(decision.id)}">${t("details")}</button></div></div></article>`).join("")}</div>`;
+      }
+
+      function comparisonCard(comparison) {
+        return `<article class="card"><div class="comparison-summary"><div class="meter" style="--value:${Number(comparison.similarity || 0)}"><strong>${percent(comparison.similarity)}</strong></div><div><h3 class="classification ${comparison.classification === "potential-divergence" ? "potential" : ""}">${esc(comparison.label)}</h3><div class="subtitle">Confidence: ${esc(comparison.confidence)} · ${percent(comparison.similarity)}</div><ul class="reason-list">${comparison.reasons.map((reason) => `<li>${esc(reason)}</li>`).join("")}</ul></div></div><div class="comparison-grid">${comparison.decisionSummaries.map((decision) => `<section class="decision-column"><div class="badges">${dataBadge(decision.isSynthetic)}<span class="badge">${esc(decision.stage)}</span></div><h4>${esc(decision.court)} · ${esc(decision.displayNumber)}</h4><p><strong>Facts:</strong> ${esc(decision.factSummary)}</p><p><strong>Outcome:</strong> ${esc(decision.outcome)}</p></section>`).join("")}</div>${comparison.materialDifferences.length ? `<div class="article-box"><h4>Material differences</h4><ul class="difference-list">${comparison.materialDifferences.map((difference) => `<li>${esc(difference.label)}: ${esc(difference.left)} ↔ ${esc(difference.right)}</li>`).join("")}</ul></div>` : ""}<div class="notice">${esc(comparison.warning)}</div></article>`;
+      }
+      function renderComparison(data) { const items=data?.comparisons ?? []; content.className=""; content.innerHTML=`${heading(t("potential"),`${items.length} comparisons`)}<div class="cards">${items.map(comparisonCard).join("")}</div>`; }
+      function renderDivergence(data) { const items=data?.pairs ?? []; content.className=""; content.innerHTML=`${heading(t("potential"),`${items.length} candidate pairs · ${data.evaluatedDecisions ?? 0} decisions`)}${items.length ? `<div class="cards">${items.map(comparisonCard).join("")}</div>` : `<div class="empty"><strong>${t("noCases")}</strong></div>`}`; }
+
+      function checklist(title, items=[], className="") {
+        return `<section class="decision-column ${className}"><h4>${esc(title)}</h4><ul class="reason-list">${items.map((item) => `<li>${esc(item)}</li>`).join("")}</ul></section>`;
+      }
+
+      function renderProceduralRoutes(data) {
+        updateProceduralFilters(data, {
+          trackId:data.filters?.trackId ?? "",
+          decisionKindId:data.filters?.decisionKindId ?? "",
+          methodId:data.filters?.methodId ?? "",
+          templateId:data.routes?.[0]?.templateId ?? ""
+        });
+        const routes = data.routes ?? [];
+        content.className = "";
+        if (!routes.length) {
+          content.innerHTML = `${heading(t("procedureAssistant"), t("procedureHelp"))}<div class="notice">${esc(data.notAvailableReason ?? t("routeUnavailable"))}</div>${(data.safeguards ?? []).map((notice) => `<div class="notice" style="margin-top:9px">${esc(notice)}</div>`).join("")}`;
+          return;
+        }
+        content.innerHTML = `${heading(t("procedureAssistant"), `${routes.length} compatible route${routes.length === 1 ? "" : "s"}`)}<div class="cards">${routes.map((route) => `<article class="card"><div class="card-top"><div><h3>${esc(route.name)}</h3><div class="subtitle">${esc(route.summary)}</div></div><span class="badge published">${esc(route.methodId)}</span></div><div class="article-box"><h4>${t("filingAuthority")}</h4><p>${esc(route.filingAuthority)}</p></div><div class="comparison-grid">${checklist(t("eligibilityChecks"),route.eligibilityChecks)}${checklist(t("exclusions"),route.exclusions)}</div><div class="article-box"><h4>${t("deadline")}</h4><p>${esc(route.deadline?.label)}</p></div><div class="cards">${(route.legalBasis ?? []).map((basis) => `<section class="decision-column"><h4>${t("legalBasis")} · ${esc(basis.articles.join(", "))}</h4><p>${esc(basis.instrument)}</p><p>${esc(basis.rule)}</p><a href="${esc(basis.sourceUrl)}" target="_blank" rel="noreferrer">${t("details")}</a></section>`).join("")}</div><div class="card-actions"><button class="secondary" data-template="${esc(route.templateId)}">${t("openTemplate")}</button></div></article>`).join("")}</div>${(data.safeguards ?? []).map((notice) => `<div class="notice" style="margin-top:9px">${esc(notice)}</div>`).join("")}`;
+      }
+
+      function renderFilingTemplate(data) {
+        content.className = "";
+        const routeSummary = data.route ? `<article class="card" style="margin-bottom:10px"><div class="card-top"><div><h3>${esc(data.route.name)}</h3><div class="subtitle">${esc(data.route.summary)}</div></div><span class="badge published">${esc(data.route.methodId)}</span></div><p class="snippet"><strong>${t("filingAuthority")}:</strong> ${esc(data.route.filingAuthority)}</p><div class="article-box"><h4>${t("deadline")}</h4><p>${esc(data.route.deadline?.label)}</p></div></article>` : "";
+        content.innerHTML = `${heading(data.title, data.purpose)}${routeSummary}<div class="comparison-grid">${checklist(t("requiredSections"),data.requiredSections)}${checklist(t("focusSections"),data.focusSections)}${checklist(t("requiredAttachments"),data.requiredAttachments)}${checklist(t("validationQuestions"),data.validationQuestions)}</div><div class="notice" style="margin-top:10px"><strong>${t("draftPolicy")}:</strong> ${esc(data.draftPolicy)}</div><div class="notice" style="margin-top:9px"><strong>${t("privacyNotice")}:</strong> ${esc(data.privacyNotice)}</div>`;
+      }
+
+      function renderSource(data) {
+        const record = data?.item ?? data;
+        if (!record) { content.innerHTML = `<div class="empty"><strong>Record unavailable</strong></div>`; return; }
+        if (data.type === "case" || record.case) return renderTrace(record);
+        if (data.type === "article" && record.article) return renderArticle({ found:true, law:record.law, article:record.article, sources:record.sources ?? [], relatedCases:[], relatedDecisions:[] });
+        content.className = "";
+        content.innerHTML = `${heading(record.title ?? record.displayNumber ?? t("details"), data.type ?? "record")}<article class="card">${record.status ? `<p class="snippet">${esc(record.status)}</p>` : ""}${record.factSummary ? `<p class="snippet"><strong>Facts:</strong> ${esc(record.factSummary)}</p><p class="snippet"><strong>Reasoning:</strong> ${esc(record.reasoningSummary)}</p><p class="snippet"><strong>Outcome:</strong> ${esc(record.outcome)}</p>` : ""}${record.articles?.map?.((article) => `<div class="article-box"><h4>${t("article")} ${esc(article.number)}</h4><p>${esc(article.text)}</p></div>`).join("") ?? ""}</article>${(record.sources ?? []).map((source) => `<article class="card" style="margin-top:10px"><h3>${esc(source.title)}</h3><p class="snippet">${esc(source.publisher)} · ${esc(source.accessNote)}</p><a href="${esc(source.url)}" target="_blank" rel="noreferrer">${t("details")}</a></article>`).join("")}`;
+      }
+
+      async function loadCountry(countryCode, render=true) {
+        state.countryCode = countryCode;
+        const data = await requestAction("browse_legal_catalog", { countryCode, language:state.language }, { render });
+        if (data) {
+          state.catalog = data;
+          updateFilters();
+          updateStats(data.stats);
+          await refreshProceduralFilters({ trackId:"civil", render:false });
+        }
+      }
+
+      function filterArgs() {
+        return { countryCode:state.countryCode, lawId:lawSelect.value || undefined, articleNumber:articleInput.value.trim() || undefined, courtType:courtSelect.value || undefined, topic:topicSelect.value || undefined, stage:stageSelect.value || undefined, includeSynthetic:true, language:state.language };
+      }
+
+      languageSelect.addEventListener("change", async () => {
+        const procedureSelection = { trackId:caseTrackSelect.value || "civil", decisionKindId:decisionKindSelect.value, methodId:challengeMethodSelect.value, templateId:filingTemplateSelect.value };
+        state.language = languageSelect.value; translateUi();
+        const jurisdictions = await requestAction("browse_jurisdictions", { language:state.language }, { render:false });
+        if (jurisdictions) state.jurisdictions = jurisdictions;
+        const catalog = await requestAction("browse_legal_catalog", { countryCode:state.countryCode, language:state.language }, { render:true });
+        if (catalog) { state.catalog = catalog; updateFilters(); updateStats(catalog.stats); }
+        await refreshProceduralFilters({ ...procedureSelection, render:false });
+      });
+      countrySelect.addEventListener("change", () => loadCountry(countrySelect.value, true));
+      lawSelect.addEventListener("change", () => { articleInput.value=""; updateArticleList(); updateBreadcrumb(); });
+      [articleInput,courtSelect,topicSelect,stageSelect].forEach((element) => element.addEventListener("change", updateBreadcrumb));
+      caseTrackSelect.addEventListener("change", () => refreshProceduralFilters({ trackId:caseTrackSelect.value, render:false }));
+      decisionKindSelect.addEventListener("change", () => refreshProceduralFilters({ trackId:caseTrackSelect.value, decisionKindId:decisionKindSelect.value, render:false }));
+      challengeMethodSelect.addEventListener("change", () => refreshProceduralFilters({ trackId:caseTrackSelect.value, decisionKindId:decisionKindSelect.value, methodId:challengeMethodSelect.value, render:false }));
+
+      $("#search-form").addEventListener("submit", (event) => { event.preventDefault(); const query=$("#search-input").value.trim(); if (query) requestAction("search_legal_materials", { query, ...filterArgs(), limit:20 }); });
+      $("#open-article").addEventListener("click", () => { const lawId=lawSelect.value, articleNumber=articleInput.value.trim(); if (!lawId || !articleNumber) { statusText.textContent=t("chooseArticle"); articleInput.focus(); return; } requestAction("get_law_article", { countryCode:state.countryCode, lawId, articleNumber, language:state.language }); });
+      $("#find-cases").addEventListener("click", () => requestAction("browse_court_cases", filterArgs()));
+      $("#find-divergence").addEventListener("click", () => requestAction("find_jurisprudential_divergence", { query: topicSelect.selectedOptions[0]?.textContent || $("#search-input").value.trim() || "similar facts", ...filterArgs(), limit:10 }));
+      $("#browse-laws").addEventListener("click", () => loadCountry(state.countryCode, true));
+      $("#show-procedural-route").addEventListener("click", () => {
+        if (!caseTrackSelect.value || !decisionKindSelect.value || !challengeMethodSelect.value) { procedureNotice.textContent=t("chooseMethod"); return; }
+        requestAction("browse_procedural_routes", { countryCode:state.countryCode, trackId:caseTrackSelect.value, decisionKindId:decisionKindSelect.value, methodId:challengeMethodSelect.value, language:state.language });
+      });
+      $("#open-filing-template").addEventListener("click", () => {
+        if (!filingTemplateSelect.value) { procedureNotice.textContent=t("chooseTemplate"); return; }
+        requestAction("get_filing_template", { countryCode:state.countryCode, templateId:filingTemplateSelect.value, language:state.language });
+      });
+
+      document.addEventListener("click", async (event) => {
+        const country = event.target.closest("[data-country]"); if (country) return loadCountry(country.dataset.country, true);
+        const law = event.target.closest("[data-law]"); if (law) { lawSelect.value=law.dataset.law; updateArticleList(); updateBreadcrumb(); const first=selectedLaw()?.articles?.[0]; if (first) { articleInput.value=first.number; return requestAction("get_law_article", { countryCode:state.countryCode, lawId:law.dataset.law, articleNumber:first.number, language:state.language }); } return requestAction("get_legal_source", { id:law.dataset.law, language:state.language }); }
+        const trace = event.target.closest("[data-trace]"); if (trace) return requestAction("trace_case_path", { caseId:trace.dataset.trace });
+        const source = event.target.closest("[data-source]"); if (source) return requestAction("get_legal_source", { id:source.dataset.source, language:state.language });
+        const template = event.target.closest("[data-template]"); if (template) return requestAction("get_filing_template", { countryCode:state.countryCode, templateId:template.dataset.template, language:state.language });
+        const demo = event.target.closest("[data-demo]"); if (!demo) return;
+        if (demo.dataset.demo === "iraq-article") { await loadCountry("IQ",false); lawSelect.value="irq-civil-procedure-83-1969"; articleInput.value="305"; updateArticleList(); updateBreadcrumb(); return requestAction("get_law_article",{countryCode:"IQ",lawId:lawSelect.value,articleNumber:"305",language:state.language}); }
+        if (demo.dataset.demo === "heirship") return requestAction("trace_case_path",{caseId:"case-demo-cross-border-heirship-305"});
+        if (demo.dataset.demo === "france-article") { await loadCountry("FR",false); lawSelect.value="fr-civil-code"; articleInput.value="6"; updateArticleList(); updateBreadcrumb(); return requestAction("get_law_article",{countryCode:"FR",lawId:"fr-civil-code",articleNumber:"6",language:state.language}); }
+        if (demo.dataset.demo === "coownership") { await loadCountry("IQ",false); topicSelect.value="coownership-dissolution"; updateBreadcrumb(); return requestAction("browse_court_cases",filterArgs()); }
+        if (demo.dataset.demo === "trace") return requestAction("trace_case_path",{caseId:"case-demo-coownership-a"});
+        if (demo.dataset.demo === "compare") return requestAction("compare_decisions",{decisionIds:["demo-co-a-correction","demo-co-b-cassation"]});
+        if (demo.dataset.demo === "civil-third-party") { await loadCountry("IQ",false); return requestAction("browse_procedural_routes",{countryCode:"IQ",trackId:"civil",decisionKindId:"third-party-affected-judgment",methodId:"third-party-objection",language:state.language}); }
+        if (demo.dataset.demo === "criminal-retrial") { await loadCountry("IQ",false); return requestAction("browse_procedural_routes",{countryCode:"IQ",trackId:"criminal",decisionKindId:"criminal-final-conviction",methodId:"retrial",language:state.language}); }
+      });
+
+      async function initialize() {
+        translateUi(); fillStageFilter();
+        const embedded = window.openai?.toolOutput;
+        try {
+          if (isEmbedded()) {
+            const jurisdictions = await requestAction("browse_jurisdictions", { language:state.language }, { render:false });
+            state.jurisdictions = jurisdictions;
+            const catalog = await requestAction("browse_legal_catalog", { countryCode:state.countryCode, language:state.language }, { render:false });
+            state.catalog = catalog; updateFilters(); updateStats(catalog?.stats);
+            await refreshProceduralFilters({ trackId:"civil", render:false });
+            if (embedded) renderPayload(embedded); else renderJurisdictions(jurisdictions);
+          } else {
+            const response = await fetch(`/api/demo?language=${state.language}&countryCode=${state.countryCode}`);
+            renderOverview(await checkJson(response));
+          }
+        } catch (error) {
+          content.innerHTML = `<div class="empty"><div><strong>Al‑Muhami Global</strong><span>${esc(error.message)}</span></div></div>`;
+        }
+      }
+      initialize();
+    </script>
+  </body>
+</html>

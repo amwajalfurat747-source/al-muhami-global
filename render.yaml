@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: al-muhami-global
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true

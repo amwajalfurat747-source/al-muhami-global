@@ -270,6 +270,14 @@ docker run --rm -p 8787:8787 -e PORT=8787 al-muhami-global
 
 The public host must expose HTTPS and `/mcp`. The server needs no OpenAI API key because the ChatGPT host performs model reasoning and tool orchestration.
 
+Cross-origin browser access is denied by default. The standalone demo works from the same origin, and server-to-server MCP clients do not need browser CORS. If a separately hosted trusted browser client is required, allow only its exact origin:
+
+```bash
+ALLOWED_ORIGINS=https://trusted-client.example npm start
+```
+
+Multiple exact origins may be comma-separated. Never use `*`. The stateless MCP transport does not expose a session identifier through CORS.
+
 ## Trust boundaries
 
 - Catalog-only means that the law is known but its complete official text is not stored.

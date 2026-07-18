@@ -16,6 +16,7 @@ This is the OpenAI Build Week submission candidate. It packages the working mult
 - Correct Iraqi Civil Procedure Law article 305 example with fictional parties.
 - Conservative potential-divergence analysis that accounts for correction relationships and missing full text.
 - Standalone demo, privacy notice, source/provenance rules, Dockerfile, and Render blueprint.
+- Exact-origin browser policy: wildcard CORS and cross-origin MCP session-header exposure were removed; untrusted browser origins receive HTTP 403.
 
 ## Verification
 

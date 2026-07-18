@@ -169,6 +169,8 @@ See [GLOBAL_PRODUCT_SPEC_AR.md](GLOBAL_PRODUCT_SPEC_AR.md) for the complete Arab
 
 ## Build Week submission files
 
+Public source repository: <https://github.com/amwajalfurat747-source/al-muhami-global>
+
 - [DEVPOST_SUBMISSION_FINAL_EN.md](DEVPOST_SUBMISSION_FINAL_EN.md) — field-ready English submission copy.
 - [DEMO_SCRIPT.md](DEMO_SCRIPT.md) — English video script timed below three minutes.
 - [JUDGES_GUIDE.md](JUDGES_GUIDE.md) — exact setup, prompts, expectations, and limitations.

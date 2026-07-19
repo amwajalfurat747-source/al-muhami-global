@@ -61,8 +61,10 @@ test("widget initializes the MCP Apps bridge before calling tools", () => {
   assert.match(html, /rpcRequest\("tools\/call"/);
 });
 
-test("global search reports progress and moves to the results", () => {
+test("every rendered action reveals the results panel", () => {
   assert.match(html, /id="search-submit"/);
   assert.match(html, /جارٍ البحث…/);
-  assert.match(html, /workspace\.scrollIntoView/);
+  assert.match(html, /resultsPanel\?\.scrollIntoView\(\{ behavior:"smooth", block:"start" \}\)/);
+  assert.match(html, /renderPayload\(payload\);\s*revealResults\(\);/);
+  assert.doesNotMatch(html, /workspace\.scrollIntoView/);
 });

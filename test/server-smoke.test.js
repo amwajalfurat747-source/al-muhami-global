@@ -90,6 +90,27 @@ test("HTTP demo and MCP tools work end to end", { timeout: 20_000 }, async () =>
     assert.ok(toolNames.includes("browse_procedural_routes"));
     assert.ok(toolNames.includes("get_filing_template"));
 
+    const widgetUri = "ui://widget/al-muhami-global-v5.html";
+    for (const tool of listed.tools) {
+      assert.equal(tool._meta?.ui?.resourceUri, widgetUri);
+      assert.equal(tool._meta?.["openai/outputTemplate"], widgetUri);
+      assert.equal(tool._meta?.["openai/widgetAccessible"], true);
+    }
+
+    const listedResources = await client.listResources();
+    const widgetResource = listedResources.resources.find((resource) => resource.uri === widgetUri);
+    assert.ok(widgetResource, "The ChatGPT app template must be listed as an MCP resource");
+    assert.equal(widgetResource.mimeType, "text/html;profile=mcp-app");
+
+    const readWidget = await client.readResource({ uri: widgetUri });
+    assert.equal(readWidget.contents.length, 1);
+    assert.equal(readWidget.contents[0].uri, widgetUri);
+    assert.equal(readWidget.contents[0].mimeType, "text/html;profile=mcp-app");
+    assert.match(readWidget.contents[0].text, /<!doctype html>/i);
+    assert.ok(readWidget.contents[0].text.length > 10_000);
+    assert.equal(readWidget.contents[0]._meta?.ui?.prefersBorder, true);
+    assert.equal(readWidget.contents[0]._meta?.["openai/widgetPrefersBorder"], true);
+
     const called = await client.callTool({
       name: "compare_decisions",
       arguments: { decisionIds: ["demo-a-correction", "demo-b-cassation"] }

@@ -28,7 +28,9 @@ const widgetHtml = readFileSync(new URL("./public/widget.html", import.meta.url)
 const privacyHtml = readFileSync(new URL("./public/privacy.html", import.meta.url), "utf8");
 const port = Number(process.env.PORT ?? 8787);
 const MCP_PATH = "/mcp";
-const WIDGET_URI = "ui://widget/al-muhami-global-v4.html";
+// Keep the template URI versioned so ChatGPT does not reuse a stale cached app
+// resource after a deployment changes the widget or its registration metadata.
+const WIDGET_URI = "ui://widget/al-muhami-global-v5.html";
 const configuredBrowserOrigins = new Set(
   (process.env.ALLOWED_ORIGINS ?? "")
     .split(",")
@@ -50,6 +52,16 @@ const READ_ONLY_ANNOTATIONS = {
   idempotentHint: true,
   openWorldHint: false
 };
+
+function widgetToolMeta() {
+  return {
+    ui: { resourceUri: WIDGET_URI },
+    // Compatibility aliases used by older ChatGPT Apps hosts. The modern
+    // ui.resourceUri field above remains the canonical MCP Apps declaration.
+    "openai/outputTemplate": WIDGET_URI,
+    "openai/widgetAccessible": true
+  };
+}
 
 const outputSchema = {
   view: z.string(),
@@ -94,6 +106,11 @@ function createAlMuhamiServer() {
             ui: {
               prefersBorder: true,
               csp: { connectDomains: [], resourceDomains: [] }
+            },
+            "openai/widgetPrefersBorder": true,
+            "openai/widgetCSP": {
+              connect_domains: [],
+              resource_domains: []
             }
           }
         }
@@ -112,7 +129,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async ({ language }) =>
       toolResult("jurisdictions", "Countries and legal systems", getJurisdictions({ language }))
@@ -131,7 +148,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async ({ countryCode, category, language }) =>
       toolResult("catalog", "Legal code catalog", getCatalog({ countryCode, category, language }))
@@ -151,7 +168,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async (args) => {
       const data = getLawArticle(args);
@@ -180,7 +197,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async (args) =>
       toolResult("court-cases", "Court cases and procedural paths", browseCourtCases(args))
@@ -209,7 +226,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async (args) =>
       toolResult("search", `نتائج البحث: ${args.query}`, searchLegalMaterials(args))
@@ -224,7 +241,7 @@ function createAlMuhamiServer() {
       inputSchema: { caseId: z.string().min(1) },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async ({ caseId }) => {
       const data = traceCase(caseId);
@@ -245,7 +262,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async ({ decisionIds }) => {
       const data = compareDecisions(decisionIds);
@@ -273,7 +290,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async (args) =>
       toolResult("divergence", `الاتجاهات القضائية: ${args.query}`, findPotentialDivergence(args))
@@ -294,7 +311,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async (args) =>
       toolResult("procedural-routes", "Procedural routes and challenge methods", getProceduralRoutes(args))
@@ -313,7 +330,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async (args) => {
       const data = getFilingTemplate(args);
@@ -335,7 +352,7 @@ function createAlMuhamiServer() {
       },
       outputSchema,
       annotations: READ_ONLY_ANNOTATIONS,
-      _meta: { ui: { resourceUri: WIDGET_URI } }
+      _meta: widgetToolMeta()
     },
     async ({ id, language }) => {
       const data = getLegalSource(id, { language });

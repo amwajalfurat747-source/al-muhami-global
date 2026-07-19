@@ -343,7 +343,7 @@
         </aside>
       </div>
 
-      <footer class="footer"><span>Al‑Muhami Global v0.4 · OpenAI Build Week</span><a href="/privacy" target="_blank" rel="noreferrer" data-i18n="privacy">Privacy and data provenance</a></footer>
+      <footer class="footer"><span>Al‑Muhami Global v0.4.2 · OpenAI Build Week</span><a href="/privacy" target="_blank" rel="noreferrer" data-i18n="privacy">Privacy and data provenance</a></footer>
     </main>
 
     <script type="module">
@@ -363,6 +363,7 @@
       const $ = (selector) => document.querySelector(selector);
       const content = $("#content");
       const workspace = $("#workspace");
+      const resultsPanel = document.querySelector(".main-panel");
       const loadingBar = $("#loading-bar");
       const statusText = $("#status-text");
       const legalNotice = $("#legal-notice");
@@ -449,7 +450,7 @@
       async function initializeBridge() {
         if (window.parent === window) return;
         await rpcRequest("ui/initialize", {
-          appInfo: { name:"al-muhami-global-widget", version:"0.4.1" },
+          appInfo: { name:"al-muhami-global-widget", version:"0.4.2" },
           appCapabilities: {},
           protocolVersion: "2026-01-26"
         });
@@ -492,11 +493,20 @@
 
       async function checkJson(response) { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); }
 
+      function revealResults() {
+        window.requestAnimationFrame(() => {
+          resultsPanel?.scrollIntoView({ behavior:"smooth", block:"start" });
+        });
+      }
+
       async function requestAction(name, args={}, { render=true }={}) {
         setLoading(true);
         try {
           const payload = isEmbedded() ? await callBridge(name, args) : await standalone(name, args);
-          if (render) renderPayload(payload);
+          if (render) {
+            renderPayload(payload);
+            revealResults();
+          }
           return payload?.data ?? payload;
         } catch (error) {
           content.className = "empty";
@@ -738,8 +748,7 @@
         searchSubmit.disabled = true;
         searchSubmit.textContent = state.language === "ar" ? "جارٍ البحث…" : state.language === "fr" ? "Recherche…" : state.language === "es" ? "Buscando…" : "Searching…";
         try {
-          const result = await requestAction("search_legal_materials", { query, ...filterArgs(), limit:20 });
-          if (result) window.requestAnimationFrame(() => workspace.scrollIntoView({ behavior:"smooth", block:"start" }));
+          await requestAction("search_legal_materials", { query, ...filterArgs(), limit:20 });
         } finally {
           searchSubmit.disabled = false;
           searchSubmit.textContent = t("search");

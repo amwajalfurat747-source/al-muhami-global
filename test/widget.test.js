@@ -53,3 +53,16 @@ test("widget module has valid JavaScript syntax", () => {
   assert.ok(match);
   assert.doesNotThrow(() => new Function(match[1]));
 });
+
+test("widget initializes the MCP Apps bridge before calling tools", () => {
+  assert.match(html, /rpcRequest\("ui\/initialize"/);
+  assert.match(html, /ui\/notifications\/initialized/);
+  assert.match(html, /await bridgeReady/);
+  assert.match(html, /rpcRequest\("tools\/call"/);
+});
+
+test("global search reports progress and moves to the results", () => {
+  assert.match(html, /id="search-submit"/);
+  assert.match(html, /جارٍ البحث…/);
+  assert.match(html, /workspace\.scrollIntoView/);
+});

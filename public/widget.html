@@ -266,7 +266,7 @@
         <p class="hero-copy" data-i18n="hero">Move from jurisdiction to legal code, article, linked cases, every court level, and potentially divergent outcomes—without losing the source or procedural context.</p>
         <form class="search-box" id="search-form">
           <input id="search-input" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Search a legal issue, article, court, or fact pattern" />
-          <button class="primary" type="submit" data-i18n="search">Search globally</button>
+          <button class="primary" id="search-submit" type="submit" data-i18n="search">Search globally</button>
         </form>
       </section>
 
@@ -379,6 +379,7 @@
       const challengeMethodSelect = $("#challenge-method-select");
       const filingTemplateSelect = $("#filing-template-select");
       const procedureNotice = $("#procedure-notice");
+      const searchSubmit = $("#search-submit");
 
       const t = (key) => i18n[state.language]?.[key] ?? i18n.en[key] ?? key;
       const esc = (value="") => String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
@@ -410,14 +411,34 @@
         return result;
       }
 
+      function rpcNotify(method, params) {
+        window.parent.postMessage({ jsonrpc:"2.0", method, params }, "*");
+      }
+
+      function rpcRequest(method, params, timeoutMs=20000) {
+        const id = ++state.requestId;
+        return new Promise((resolve, reject) => {
+          const timeoutId = window.setTimeout(() => {
+            state.pending.delete(id);
+            reject(new Error("Tool request timed out"));
+          }, timeoutMs);
+          state.pending.set(id, {
+            resolve: (value) => { window.clearTimeout(timeoutId); resolve(value); },
+            reject: (error) => { window.clearTimeout(timeoutId); reject(error); }
+          });
+          window.parent.postMessage({ jsonrpc:"2.0", id, method, params }, "*");
+        });
+      }
+
       window.addEventListener("message", (event) => {
+        if (event.source !== window.parent) return;
         const message = event.data;
         if (!message || message.jsonrpc !== "2.0") return;
-        if (message.id && state.pending.has(message.id)) {
+        if (message.id !== undefined && state.pending.has(message.id)) {
           const { resolve, reject } = state.pending.get(message.id);
           state.pending.delete(message.id);
           if (message.error) reject(new Error(message.error.message || "Tool call failed"));
-          else resolve(unwrap(message.result));
+          else resolve(message.result);
         }
         if (message.method === "ui/notifications/tool-result") {
           const payload = message.params?.structuredContent ?? message.params?.result?.structuredContent;
@@ -425,13 +446,27 @@
         }
       });
 
+      async function initializeBridge() {
+        if (window.parent === window) return;
+        await rpcRequest("ui/initialize", {
+          appInfo: { name:"al-muhami-global-widget", version:"0.4.1" },
+          appCapabilities: {},
+          protocolVersion: "2026-01-26"
+        });
+        rpcNotify("ui/notifications/initialized", {});
+      }
+
+      const bridgeReady = window.parent !== window
+        ? initializeBridge()
+        : Promise.resolve();
+
       async function callBridge(name, args) {
+        if (window.parent !== window) {
+          await bridgeReady;
+          return unwrap(await rpcRequest("tools/call", { name, arguments:args }));
+        }
         if (window.openai?.callTool) return unwrap(await window.openai.callTool(name, args));
-        const id = `al-muhami-global-${++state.requestId}`;
-        const request = new Promise((resolve, reject) => state.pending.set(id, { resolve, reject }));
-        window.parent.postMessage({ jsonrpc:"2.0", id, method:"tools/call", params:{ name, arguments:args } }, "*");
-        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Tool request timed out")), 20000));
-        return Promise.race([request, timeout]);
+        throw new Error("ChatGPT tool bridge is unavailable");
       }
 
       function queryString(args) {
@@ -696,7 +731,20 @@
       decisionKindSelect.addEventListener("change", () => refreshProceduralFilters({ trackId:caseTrackSelect.value, decisionKindId:decisionKindSelect.value, render:false }));
       challengeMethodSelect.addEventListener("change", () => refreshProceduralFilters({ trackId:caseTrackSelect.value, decisionKindId:decisionKindSelect.value, methodId:challengeMethodSelect.value, render:false }));
 
-      $("#search-form").addEventListener("submit", (event) => { event.preventDefault(); const query=$("#search-input").value.trim(); if (query) requestAction("search_legal_materials", { query, ...filterArgs(), limit:20 }); });
+      $("#search-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const query = $("#search-input").value.trim();
+        if (!query || searchSubmit.disabled) return;
+        searchSubmit.disabled = true;
+        searchSubmit.textContent = state.language === "ar" ? "جارٍ البحث…" : state.language === "fr" ? "Recherche…" : state.language === "es" ? "Buscando…" : "Searching…";
+        try {
+          const result = await requestAction("search_legal_materials", { query, ...filterArgs(), limit:20 });
+          if (result) window.requestAnimationFrame(() => workspace.scrollIntoView({ behavior:"smooth", block:"start" }));
+        } finally {
+          searchSubmit.disabled = false;
+          searchSubmit.textContent = t("search");
+        }
+      });
       $("#open-article").addEventListener("click", () => { const lawId=lawSelect.value, articleNumber=articleInput.value.trim(); if (!lawId || !articleNumber) { statusText.textContent=t("chooseArticle"); articleInput.focus(); return; } requestAction("get_law_article", { countryCode:state.countryCode, lawId, articleNumber, language:state.language }); });
       $("#find-cases").addEventListener("click", () => requestAction("browse_court_cases", filterArgs()));
       $("#find-divergence").addEventListener("click", () => requestAction("find_jurisprudential_divergence", { query: topicSelect.selectedOptions[0]?.textContent || $("#search-input").value.trim() || "similar facts", ...filterArgs(), limit:10 }));

@@ -28,7 +28,7 @@ const widgetHtml = readFileSync(new URL("./public/widget.html", import.meta.url)
 const privacyHtml = readFileSync(new URL("./public/privacy.html", import.meta.url), "utf8");
 const port = Number(process.env.PORT ?? 8787);
 const MCP_PATH = "/mcp";
-const WIDGET_URI = "ui://widget/al-muhami-global-v2.html";
+const WIDGET_URI = "ui://widget/al-muhami-global-v3.html";
 const configuredBrowserOrigins = new Set(
   (process.env.ALLOWED_ORIGINS ?? "")
     .split(",")

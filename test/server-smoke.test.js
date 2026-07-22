@@ -50,6 +50,39 @@ test("HTTP demo and MCP tools work end to end", { timeout: 20_000 }, async () =>
     assert.equal(sameOrigin.status, 200);
     assert.equal(sameOrigin.headers.get("access-control-allow-origin"), baseUrl);
 
+    const blockedChatGptApi = await fetch(`${baseUrl}/api/demo`, {
+      headers: { Origin: "https://chatgpt.com" }
+    });
+    assert.equal(blockedChatGptApi.status, 403);
+
+    const blockedMcpOrigin = await fetch(`${baseUrl}/mcp`, {
+      method: "OPTIONS",
+      headers: { Origin: "https://untrusted.example" }
+    });
+    assert.equal(blockedMcpOrigin.status, 403);
+
+    const chatGptMcpPreflight = await fetch(`${baseUrl}/mcp`, {
+      method: "OPTIONS",
+      headers: {
+        Origin: "https://chatgpt.com",
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "content-type,mcp-protocol-version"
+      }
+    });
+    assert.equal(chatGptMcpPreflight.status, 204);
+    assert.equal(
+      chatGptMcpPreflight.headers.get("access-control-allow-origin"),
+      "https://chatgpt.com"
+    );
+    assert.match(
+      chatGptMcpPreflight.headers.get("access-control-allow-headers"),
+      /mcp-protocol-version/i
+    );
+    assert.equal(
+      chatGptMcpPreflight.headers.get("access-control-expose-headers"),
+      "mcp-session-id"
+    );
+
     const demoResponse = await fetch(`${baseUrl}/api/demo`);
     assert.equal(demoResponse.status, 200);
     const demo = await demoResponse.json();
@@ -90,7 +123,7 @@ test("HTTP demo and MCP tools work end to end", { timeout: 20_000 }, async () =>
     assert.ok(toolNames.includes("browse_procedural_routes"));
     assert.ok(toolNames.includes("get_filing_template"));
 
-    const widgetUri = "ui://widget/al-muhami-global-v5.html";
+    const widgetUri = "ui://widget/al-muhami-global-v6.html";
     for (const tool of listed.tools) {
       assert.equal(tool._meta?.ui?.resourceUri, widgetUri);
       assert.equal(tool._meta?.["openai/outputTemplate"], widgetUri);
@@ -133,6 +166,17 @@ test("HTTP demo and MCP tools work end to end", { timeout: 20_000 }, async () =>
     assert.equal(routeCall.structuredContent.data.routes[0].id, "iq-civil-petition-order-grievance");
 
     await client.close();
+
+    const browserClient = new Client({ name: "chatgpt-browser-smoke-test", version: "1.0.0" });
+    const browserTransport = new StreamableHTTPClientTransport(
+      new URL(`${baseUrl}/mcp`),
+      { requestInit: { headers: { Origin: "https://chatgpt.com" } } }
+    );
+    await browserClient.connect(browserTransport);
+    const browserWidget = await browserClient.readResource({ uri: widgetUri });
+    assert.equal(browserWidget.contents[0].mimeType, "text/html;profile=mcp-app");
+    assert.match(browserWidget.contents[0].text, /<!doctype html>/i);
+    await browserClient.close();
   } finally {
     child.kill("SIGTERM");
     await new Promise((resolveWait) => child.once("exit", resolveWait));

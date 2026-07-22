@@ -30,7 +30,14 @@ const port = Number(process.env.PORT ?? 8787);
 const MCP_PATH = "/mcp";
 // Keep the template URI versioned so ChatGPT does not reuse a stale cached app
 // resource after a deployment changes the widget or its registration metadata.
-const WIDGET_URI = "ui://widget/al-muhami-global-v5.html";
+const WIDGET_URI = "ui://widget/al-muhami-global-v6.html";
+// ChatGPT may fetch an app template from the browser after the server-side
+// tool call has completed. Allow only the exact official ChatGPT origins on
+// the MCP endpoint; the standalone JSON API remains same-origin by default.
+const CHATGPT_MCP_BROWSER_ORIGINS = new Set([
+  "https://chatgpt.com",
+  "https://chat.openai.com"
+]);
 const configuredBrowserOrigins = new Set(
   (process.env.ALLOWED_ORIGINS ?? "")
     .split(",")
@@ -386,7 +393,7 @@ function requestBaseOrigin(req) {
   return host ? `${protocol}://${host}` : "";
 }
 
-function applyBrowserOriginPolicy(req, res) {
+function applyBrowserOriginPolicy(req, res, url) {
   const suppliedOrigin = firstHeaderValue(req.headers.origin);
   if (!suppliedOrigin) return true;
 
@@ -397,12 +404,18 @@ function applyBrowserOriginPolicy(req, res) {
     return false;
   }
 
+  const isChatGptMcpRequest = url.pathname === MCP_PATH
+    && CHATGPT_MCP_BROWSER_ORIGINS.has(normalizedOrigin);
   const allowed = normalizedOrigin === requestBaseOrigin(req)
-    || configuredBrowserOrigins.has(normalizedOrigin);
+    || configuredBrowserOrigins.has(normalizedOrigin)
+    || isChatGptMcpRequest;
   if (!allowed) return false;
 
   res.setHeader("access-control-allow-origin", normalizedOrigin);
   res.setHeader("vary", "Origin");
+  if (url.pathname === MCP_PATH) {
+    res.setHeader("access-control-expose-headers", "mcp-session-id");
+  }
   return true;
 }
 
@@ -542,7 +555,7 @@ const httpServer = createServer(async (req, res) => {
 
     const url = new URL(req.url, `http://${req.headers.host ?? "localhost"}`);
 
-    if (!applyBrowserOriginPolicy(req, res)) {
+    if (!applyBrowserOriginPolicy(req, res, url)) {
       sendJson(res, 403, { error: "Browser origin not allowed" });
       return;
     }
@@ -550,7 +563,7 @@ const httpServer = createServer(async (req, res) => {
     if (req.method === "OPTIONS") {
       res.writeHead(204, {
         "Access-Control-Allow-Methods": "POST, GET, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "content-type, accept, mcp-protocol-version",
+        "Access-Control-Allow-Headers": "content-type, accept, mcp-protocol-version, mcp-session-id, last-event-id",
         "Access-Control-Max-Age": "600"
       });
       res.end();

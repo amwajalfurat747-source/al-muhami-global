@@ -30,7 +30,7 @@ const port = Number(process.env.PORT ?? 8787);
 const MCP_PATH = "/mcp";
 // Keep the template URI versioned so ChatGPT does not reuse a stale cached app
 // resource after a deployment changes the widget or its registration metadata.
-const WIDGET_URI = "ui://widget/al-muhami-global-v6.html";
+const WIDGET_URI = "ui://widget/al-muhami-global-v8.html";
 // ChatGPT may fetch an app template from the browser after the server-side
 // tool call has completed. Allow only the exact official ChatGPT origins on
 // the MCP endpoint; the standalone JSON API remains same-origin by default.

@@ -68,3 +68,20 @@ test("every rendered action reveals the results panel", () => {
   assert.match(html, /renderPayload\(payload\);\s*revealResults\(\);/);
   assert.doesNotMatch(html, /workspace\.scrollIntoView/);
 });
+
+test("widget explains article provenance and can retry failed actions", () => {
+  assert.match(html, /v0\.6\.1/);
+  assert.match(html, /تمت مطابقة النص مع المصدر/);
+  assert.match(html, /amendments-not-fully-consolidated/);
+  assert.match(html, /data-retry-action/);
+  assert.match(html, /state\.lastAction/);
+  assert.match(html, /renderActionError/);
+});
+
+test("widget distinguishes judgments from guidance and reports image availability", () => {
+  assert.match(html, /صورة الحكم الأصلية/);
+  assert.match(html, /غير منشورة في المصدر/);
+  assert.match(html, /فتح المنشور الرسمي/);
+  assert.match(html, /ليس حكماً قضائياً/);
+  assert.match(html, /منشور ويب رسمي وليس صورة أصلية للحكم/);
+});

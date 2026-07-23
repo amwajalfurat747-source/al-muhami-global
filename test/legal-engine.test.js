@@ -52,6 +52,12 @@ test("article drill-down links text to related cases and reports corpus gaps", (
   assert.equal(procedureArticle.found, true);
   assert.match(procedureArticle.article.text, /إقامة المتوفى الدائمي/);
   assert.ok(procedureArticle.relatedCases.some((caseItem) => caseItem.id === "case-demo-cross-border-heirship-305"));
+  assert.equal(procedureArticle.provenance.verificationStatus, "source-checked");
+  assert.equal(procedureArticle.provenance.verificationTier, "official-copy");
+  assert.equal(procedureArticle.provenance.consolidationStatus, "amendments-not-fully-consolidated");
+  assert.ok(procedureArticle.provenance.primarySources.some((source) => source.id === "src-iraqi-civil-procedure-gov-pdf"));
+  assert.ok(procedureArticle.relatedDecisions.some((decision) => decision.id === "dec-cassation-jurisdiction-78-2007"));
+  assert.equal(procedureArticle.relatedAuthorities.length, 3);
 
   const wrongCivilInstrument = getLawArticle({ lawId: "irq-civil-code-40-1951", articleNumber: "305", language: "ar" });
   assert.equal(wrongCivilInstrument.found, false);
@@ -85,9 +91,18 @@ test("Riyadh Agreement recognition limits are navigable as separate provisions",
 
 test("court and topic filters expose co-ownership procedural paths", () => {
   const result = browseCourtCases({ countryCode: "IQ", topic: "coownership-dissolution", includeSynthetic: true });
-  assert.equal(result.totalMatches, 2);
+  assert.equal(result.totalMatches, 8);
   assert.ok(result.cases.every((caseItem) => caseItem.timelineStages.some((stage) => stage.stageCode === "cassation")));
   assert.ok(result.cases.some((caseItem) => caseItem.timelineStages.some((stage) => stage.stageCode === "correction")));
+
+  const official = browseCourtCases({
+    countryCode: "IQ",
+    topic: "coownership-dissolution",
+    includeSynthetic: false
+  });
+  assert.equal(official.totalMatches, 6);
+  assert.ok(official.cases.every((caseItem) => caseItem.isSynthetic === false));
+  assert.ok(official.cases.every((caseItem) => caseItem.timelineStages.some((stage) => stage.stageCode === "cassation")));
 });
 
 test("co-ownership final decisions can be flagged as a potential divergence", () => {
@@ -169,6 +184,53 @@ test("source lookup preserves verification links and demo labels", () => {
   const demo = getLegalSource("demo-a-trial");
   assert.equal(demo.item.isSynthetic, true);
   assert.equal(demo.item.sourceQuality, "synthetic-demo");
+
+  const procedureArticle = getLegalSource("irq-civil-procedure-83-1969:305", { language: "ar" });
+  assert.equal(procedureArticle.item.provenance.verificationStatus, "source-checked");
+  assert.ok(procedureArticle.item.provenance.primarySources.some((source) => source.id === "src-iraqi-civil-procedure-gov-pdf"));
+});
+
+test("official article 305 materials preserve publication type and original-image status", () => {
+  const decision = getLegalSource("dec-cassation-jurisdiction-78-2007");
+  assert.equal(decision.type, "decision");
+  assert.equal(decision.item.publicationType, "judgment");
+  assert.equal(decision.item.verification, "verified-official-text");
+  const originalImage = decision.item.documentAssets.find((asset) => asset.isOriginalDecisionImage);
+  assert.equal(originalImage.availability, "not-published");
+  assert.ok(decision.item.sources.some((source) => source.url === "https://www.sjc.iq/qview.719/"));
+
+  const authority = getLegalSource("authority-sjc-108-2023");
+  assert.equal(authority.type, "authority");
+  assert.equal(authority.item.publicationType, "judicial-guidance");
+  assert.equal(authority.item.verification, "official-guidance");
+  assert.ok(authority.item.documentAssets.every((asset) => asset.isOriginalDecisionImage === false));
+
+  const coownershipDecision = getLegalSource("dec-coownership-constructions-18-2026");
+  assert.equal(coownershipDecision.type, "decision");
+  assert.equal(coownershipDecision.item.isSynthetic, false);
+  assert.equal(coownershipDecision.item.verification, "verified-official-text");
+  assert.ok(coownershipDecision.item.sources.some((source) => source.url === "https://www.sjc.iq/qview.3837/"));
+});
+
+test("search surfaces official judicial guidance separately from judgments", () => {
+  const result = searchLegalMaterials({
+    query: "التلاعب في القسامات الشرعية",
+    countryCode: "IQ",
+    limit: 20
+  });
+  const authority = result.results.find((item) => item.id === "authority-sjc-108-2023");
+  assert.ok(authority);
+  assert.equal(authority.type, "authority");
+  assert.ok(authority.badges.includes("ليس حكماً قضائياً"));
+});
+
+test("registers lawyer Faiz Al-Hilli's page as a verified secondary commentary publisher", () => {
+  const source = getLegalSource("src-faeez-office-facebook");
+  assert.equal(source.type, "source");
+  assert.equal(source.item.type, "secondary-legal-commentary-publisher");
+  assert.equal(source.item.verificationStatus, "publisher-identity-verified");
+  assert.equal(source.item.rightsPolicy, "link-and-cite-only-unless-reuse-permission");
+  assert.equal(source.item.url, "https://www.facebook.com/faeezoffice/");
 });
 
 test("civil procedural filter exposes the six article 168 remedies and the separate grievance route", () => {

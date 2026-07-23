@@ -188,6 +188,15 @@
       .badge.warning { background: var(--red-soft); color: var(--red); }
       .card-actions { flex-wrap: wrap; gap: 9px; margin-top: 10px; }
       .notice { padding: 11px 12px; border: 1px solid #ead8a9; border-radius: 11px; background: var(--gold-soft); color: #655020; font-size: .72rem; }
+      .verification-card { margin-top: 10px; padding: 12px; border: 1px solid #b9d8d4; border-radius: 12px; background: var(--teal-soft); }
+      .verification-card h4 { margin: 0 0 8px; color: var(--navy); font-size: .78rem; }
+      .verification-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+      .verification-item { padding: 9px; border-radius: 9px; background: rgba(255,255,255,.82); color: #46566a; font-size: .72rem; }
+      .verification-item strong { display: block; margin-bottom: 3px; color: var(--navy); }
+      .document-evidence { margin-top: 10px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; background: #f7f9fc; color: #46566a; font-size: .72rem; }
+      .document-evidence strong { color: var(--navy); }
+      .error-panel { display: grid; gap: 10px; max-width: 560px; margin: 24px auto; padding: 16px; border: 1px solid #efb7b7; border-radius: 13px; background: var(--red-soft); color: var(--red); text-align: start; }
+      .error-panel p { margin: 0; overflow-wrap: anywhere; }
       .article-box { margin: 10px 0; padding: 13px 14px; border-inline-start: 4px solid var(--gold); border-radius: 11px; background: var(--gold-soft); }
       .article-box h4 { margin: 0 0 5px; font-size: .78rem; }
       .article-box p { margin: 0; white-space: pre-wrap; font-size: .82rem; }
@@ -233,7 +242,7 @@
         .brand p { display: none; }
         .language-wrap label { display: none; }
         .search-box { grid-template-columns: 1fr; }
-        .filter-grid, .procedure-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+        .filter-grid, .procedure-grid, .verification-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
         .country-grid, .comparison-grid { grid-template-columns: 1fr; }
         .main-panel { padding: 13px; }
         .comparison-summary { grid-template-columns: 1fr; text-align: center; }
@@ -343,7 +352,7 @@
         </aside>
       </div>
 
-      <footer class="footer"><span>Al‑Muhami Global v0.4.2 · OpenAI Build Week</span><a href="/privacy" target="_blank" rel="noreferrer" data-i18n="privacy">Privacy and data provenance</a></footer>
+      <footer class="footer"><span>Al‑Muhami Global v0.6.1 · Iraq verification phase</span><a href="/privacy" target="_blank" rel="noreferrer" data-i18n="privacy">Privacy and data provenance</a></footer>
     </main>
 
     <script type="module">
@@ -359,7 +368,17 @@
       Object.assign(i18n.fr, { procedureAssistant:"Assistant de recours et de rédaction", procedureHelp:"Choisissez le type d’affaire et la décision exacte avant le recours ; les voies incompatibles sont masquées.", eligibilityGate:"Contrôle de recevabilité", caseTrack:"Type d’affaire", decisionKind:"Type de décision", challengeMethod:"Voie de recours", filingTemplate:"Modèle d’acte", showRoute:"Expliquer la voie compatible", openTemplate:"Ouvrir la liste de rédaction", procedureNotice:"La voie dépend de la décision, de la qualité, de la signification et du droit actuel. Aucun délai n’est garanti automatiquement.", chooseTrack:"Choisir le type d’affaire", chooseDecision:"Choisir la décision exacte", chooseMethod:"Choisir une voie compatible", chooseTemplate:"Choisir un modèle", routeUnavailable:"Aucune voie encodée ne correspond.", eligibilityChecks:"Questions de recevabilité", exclusions:"Quand ne pas l’utiliser", filingAuthority:"Autorité destinataire", deadline:"Alerte de délai", legalBasis:"Fondement juridique", requiredSections:"Rubriques requises", focusSections:"Points propres à la voie", requiredAttachments:"Liste des pièces", validationQuestions:"Questions avant rédaction", draftPolicy:"Limite de rédaction", privacyNotice:"Confidentialité du prototype", demoThirdParty:"Civil · tierce opposition", demoCriminalRetrial:"Pénal · recevabilité de la révision" });
       Object.assign(i18n.es, { procedureAssistant:"Asistente de recursos y escritos", procedureHelp:"Elija el tipo de asunto y la decisión exacta antes del recurso; se ocultan las vías incompatibles.", eligibilityGate:"Control de procedencia", caseTrack:"Tipo de asunto", decisionKind:"Tipo de decisión", challengeMethod:"Vía de impugnación", filingTemplate:"Plantilla de escrito", showRoute:"Explicar la vía compatible", openTemplate:"Abrir lista de redacción", procedureNotice:"La vía depende de la decisión, legitimación, notificación y ley vigente. Ningún plazo se garantiza automáticamente.", chooseTrack:"Elegir tipo de asunto", chooseDecision:"Elegir decisión exacta", chooseMethod:"Elegir vía compatible", chooseTemplate:"Elegir plantilla", routeUnavailable:"No hay vía codificada compatible.", eligibilityChecks:"Preguntas de procedencia", exclusions:"Cuándo no usarla", filingAuthority:"Autoridad destinataria", deadline:"Alerta de plazo", legalBasis:"Fundamento legal", requiredSections:"Secciones requeridas", focusSections:"Enfoque específico", requiredAttachments:"Lista de anexos", validationQuestions:"Preguntas antes de redactar", draftPolicy:"Límite de redacción", privacyNotice:"Privacidad del prototipo", demoThirdParty:"Civil · oposición de tercero", demoCriminalRetrial:"Penal · procedencia de revisión" });
 
-      const state = { language:"en", countryCode:"IQ", jurisdictions:null, catalog:null, procedural:null, pending:new Map(), requestId:0 };
+      Object.assign(i18n.en, { sourceChecked:"Text checked against source", verificationStatus:"Verification status", officialCopy:"Officially published copy", primarySources:"Primary sources", sourceCheckedOn:"Source checked on", consolidationWarning:"Amendments are not yet fully consolidated", effectiveDateWarning:"Verify the law in force on the relevant date", actionFailed:"The request could not be completed", retry:"Retry", retrying:"Retrying…", editorialNotes:"Editorial notes" });
+      Object.assign(i18n.ar, { sourceChecked:"تمت مطابقة النص مع المصدر", verificationStatus:"حالة التحقق", officialCopy:"نسخة منشورة رسمياً", primarySources:"المصادر الأساسية", sourceCheckedOn:"تاريخ مطابقة المصدر", consolidationWarning:"لم تُدمج جميع التعديلات في نسخة موحدة بعد", effectiveDateWarning:"يجب التحقق من النص النافذ في تاريخ الواقعة", actionFailed:"تعذّر إكمال الطلب", retry:"إعادة المحاولة", retrying:"جاري إعادة المحاولة…", editorialNotes:"ملاحظات التحرير" });
+      Object.assign(i18n.fr, { sourceChecked:"Texte vérifié par rapport à la source", verificationStatus:"État de vérification", officialCopy:"Copie publiée officiellement", primarySources:"Sources primaires", sourceCheckedOn:"Source vérifiée le", consolidationWarning:"Les modifications ne sont pas encore entièrement consolidées", effectiveDateWarning:"Vérifier le droit en vigueur à la date pertinente", actionFailed:"La demande n’a pas pu aboutir", retry:"Réessayer", retrying:"Nouvelle tentative…", editorialNotes:"Notes éditoriales" });
+      Object.assign(i18n.es, { sourceChecked:"Texto cotejado con la fuente", verificationStatus:"Estado de verificación", officialCopy:"Copia publicada oficialmente", primarySources:"Fuentes primarias", sourceCheckedOn:"Fuente verificada el", consolidationWarning:"Las reformas aún no están totalmente consolidadas", effectiveDateWarning:"Verifique la ley vigente en la fecha pertinente", actionFailed:"No se pudo completar la solicitud", retry:"Reintentar", retrying:"Reintentando…", editorialNotes:"Notas editoriales" });
+
+      Object.assign(i18n.en, { supportingGuidance:"Related judicial guidance", originalDecisionImage:"Original judgment image", imageNotPublished:"Not published by the source", officialPublishedText:"Official published text", openOfficialPublication:"Open official publication", webPublicationNotScan:"Official web publication, not an image of the original judgment", officialJudgment:"Officially published judgment", judicialGuidance:"Official judicial guidance", notAJudgment:"Not a court judgment" });
+      Object.assign(i18n.ar, { supportingGuidance:"توجيهات قضائية مرتبطة", originalDecisionImage:"صورة الحكم الأصلية", imageNotPublished:"غير منشورة في المصدر", officialPublishedText:"النص الرسمي المنشور", openOfficialPublication:"فتح المنشور الرسمي", webPublicationNotScan:"منشور ويب رسمي وليس صورة أصلية للحكم", officialJudgment:"حكم قضائي منشور رسمياً", judicialGuidance:"توجيه قضائي رسمي", notAJudgment:"ليس حكماً قضائياً" });
+      Object.assign(i18n.fr, { supportingGuidance:"Orientations judiciaires liées", originalDecisionImage:"Image du jugement original", imageNotPublished:"Non publiée par la source", officialPublishedText:"Texte officiel publié", openOfficialPublication:"Ouvrir la publication officielle", webPublicationNotScan:"Publication web officielle, pas une image du jugement original", officialJudgment:"Jugement officiellement publié", judicialGuidance:"Orientation judiciaire officielle", notAJudgment:"Ce n’est pas un jugement" });
+      Object.assign(i18n.es, { supportingGuidance:"Orientación judicial relacionada", originalDecisionImage:"Imagen de la sentencia original", imageNotPublished:"No publicada por la fuente", officialPublishedText:"Texto oficial publicado", openOfficialPublication:"Abrir publicación oficial", webPublicationNotScan:"Publicación web oficial, no una imagen de la sentencia original", officialJudgment:"Sentencia publicada oficialmente", judicialGuidance:"Orientación judicial oficial", notAJudgment:"No es una sentencia" });
+
+      const state = { language:"en", countryCode:"IQ", jurisdictions:null, catalog:null, procedural:null, pending:new Map(), requestId:0, lastAction:null };
       const $ = (selector) => document.querySelector(selector);
       const content = $("#content");
       const workspace = $("#workspace");
@@ -450,7 +469,7 @@
       async function initializeBridge() {
         if (window.parent === window) return;
         await rpcRequest("ui/initialize", {
-          appInfo: { name:"al-muhami-global-widget", version:"0.4.2" },
+          appInfo: { name:"al-muhami-global-widget", version:"0.6.1" },
           appCapabilities: {},
           protocolVersion: "2026-01-26"
         });
@@ -499,7 +518,16 @@
         });
       }
 
+      function renderActionError(error) {
+        content.className = "";
+        const retryButton = state.lastAction ? `<button class="secondary" type="button" data-retry-action>${t("retry")}</button>` : "";
+        content.innerHTML = `${heading(t("actionFailed"))}<div class="error-panel"><p>${esc(error?.message ?? t("actionFailed"))}</p>${retryButton}</div>`;
+        statusText.textContent = t("actionFailed");
+        revealResults();
+      }
+
       async function requestAction(name, args={}, { render=true }={}) {
+        if (render) state.lastAction = { name, args:{ ...args }, render:true };
         setLoading(true);
         try {
           const payload = isEmbedded() ? await callBridge(name, args) : await standalone(name, args);
@@ -509,9 +537,8 @@
           }
           return payload?.data ?? payload;
         } catch (error) {
-          content.className = "empty";
-          content.innerHTML = `<div><strong>Unable to complete the request</strong><span>${esc(error.message)}</span></div>`;
-          statusText.textContent = error.message;
+          if (render) renderActionError(error);
+          else statusText.textContent = error.message;
           return null;
         } finally { setLoading(false); }
       }
@@ -599,6 +626,21 @@
 
       function heading(title, subtitle="") { return `<div class="panel-heading"><div><h2>${esc(title)}</h2><p>${esc(subtitle)}</p></div></div>`; }
       function dataBadge(isSynthetic) { return `<span class="badge ${isSynthetic ? "demo" : "published"}">${isSynthetic ? t("synthetic") : t("published")}</span>`; }
+      function publicationBadge(record={}) {
+        if (record.publicationType === "judgment") return `<span class="badge published">${t("officialJudgment")}</span>`;
+        if (record.publicationType === "judicial-guidance") return `<span class="badge">${t("judicialGuidance")}</span><span class="badge warning">${t("notAJudgment")}</span>`;
+        return "";
+      }
+      function documentEvidence(record={}) {
+        const assets = record.documentAssets ?? [];
+        if (!assets.length) return "";
+        const web = assets.find((asset) => asset.type === "official-web-publication" && asset.availability === "available");
+        const scan = assets.find((asset) => asset.isOriginalDecisionImage);
+        const status = record.publicationType === "judgment"
+          ? `<strong>${t("originalDecisionImage")}:</strong> ${scan?.availability === "available" ? esc(scan.label) : t("imageNotPublished")}`
+          : `<strong>${t("officialPublishedText")}:</strong> ${t("webPublicationNotScan")}`;
+        return `<div class="document-evidence"><div>${status}</div>${web ? `<div class="card-actions"><a class="text-button" href="${esc(web.url)}" target="_blank" rel="noreferrer">${t("openOfficialPublication")}</a></div>` : ""}</div>`;
+      }
 
       function renderPayload(payload) {
         if (!payload) return;
@@ -641,7 +683,16 @@
           return;
         }
         const article = data.article;
-        content.innerHTML = `${heading(`${data.law.title} · ${t("article")} ${article.number}`, `${t("originalText")} · ${article.displayedLanguage}`)}<article class="card"><div class="badges"><span class="badge published">${t("published")}</span><span class="badge">${article.translationAvailable ? `Language: ${article.displayedLanguage}` : `Original only: ${article.displayedLanguage}`}</span></div><div class="article-box"><h4>${t("article")} ${esc(article.number)}</h4><p dir="auto">${esc(article.text)}</p></div><p class="snippet">${esc(article.verification)}</p><div class="card-actions">${(data.sources ?? []).map((source) => `<a class="text-button" href="${esc(source.url)}" target="_blank" rel="noreferrer">${esc(source.title)}</a>`).join("")}</div></article><div style="height:10px"></div>${heading(t("relatedCases"), `${data.relatedCases.length} ${t("cases")} · ${data.relatedDecisions.length} ${t("relatedDecisions")}`)}${data.relatedCases.length ? `<div class="cards">${data.relatedCases.map(caseCard).join("")}</div>` : `<div class="notice">${t("noRelatedCases")}</div>`}${data.relatedDecisions.length ? `<div class="cards" style="margin-top:10px">${data.relatedDecisions.map((decision) => `<article class="card"><div class="card-top"><div><h3>${esc(decision.court)}</h3><div class="subtitle">${esc(decision.displayNumber)} · ${esc(decision.stage)} · ${esc(decision.date)}</div></div>${dataBadge(decision.isSynthetic)}</div><p class="snippet"><strong>Facts:</strong> ${esc(decision.factSummary)}<br><strong>Outcome:</strong> ${esc(decision.outcome)}</p><div class="card-actions">${decision.caseId ? `<button class="text-button" data-trace="${esc(decision.caseId)}">${t("trace")}</button>` : ""}</div></article>`).join("")}</div>` : ""}`;
+        const provenance = data.provenance ?? {};
+        const relatedCases = data.relatedCases ?? [];
+        const relatedDecisions = data.relatedDecisions ?? [];
+        const relatedAuthorities = data.relatedAuthorities ?? [];
+        const allSources = [...new Map([...(provenance.primarySources ?? []), ...(data.sources ?? [])].map((source) => [source.id ?? source.url, source])).values()];
+        const checked = provenance.verificationStatus === "source-checked";
+        const verificationCard = `<section class="verification-card"><h4>${t("verificationStatus")}</h4><div class="badges"><span class="badge ${checked ? "published" : "warning"}">${checked ? t("sourceChecked") : esc(provenance.verificationStatus ?? "editorial-review-required")}</span>${provenance.verificationTier === "official-copy" ? `<span class="badge published">${t("officialCopy")}</span>` : ""}${provenance.consolidationStatus === "amendments-not-fully-consolidated" ? `<span class="badge warning">${t("consolidationWarning")}</span>` : ""}</div><div class="verification-grid"><div class="verification-item"><strong>${t("sourceCheckedOn")}</strong>${esc(provenance.sourceCheckedOn ?? "—")}</div><div class="verification-item"><strong>${t("effectiveDateWarning")}</strong>${provenance.effectiveDateStatus === "verify-at-relevant-date" ? t("effectiveDateWarning") : esc(provenance.effectiveDateStatus ?? "—")}</div></div>${(provenance.editorialNotes ?? []).length ? `<div class="verification-item" style="margin-top:8px"><strong>${t("editorialNotes")}</strong><ul class="reason-list">${provenance.editorialNotes.map((note) => `<li>${esc(note)}</li>`).join("")}</ul></div>` : ""}</section>`;
+        const decisionCards = relatedDecisions.map((decision) => `<article class="card"><div class="card-top"><div><h3>${esc(decision.court)}</h3><div class="subtitle">${esc(decision.displayNumber)} · ${esc(decision.stage)} · ${esc(decision.date)}</div></div></div><div class="badges">${publicationBadge(decision)}${decision.isSynthetic ? dataBadge(true) : ""}</div><p class="snippet"><strong>Facts:</strong> ${esc(decision.factSummary)}<br><strong>Outcome:</strong> ${esc(decision.outcome)}</p>${documentEvidence(decision)}<div class="card-actions"><button class="text-button" data-source="${esc(decision.id)}">${t("details")}</button>${decision.caseId ? `<button class="text-button" data-trace="${esc(decision.caseId)}">${t("trace")}</button>` : ""}</div></article>`).join("");
+        const authorityCards = relatedAuthorities.map((authority) => `<article class="card"><div class="card-top"><div><h3>${esc(authority.title)}</h3><div class="subtitle">${esc(authority.number)} · ${esc(authority.issuer)} · ${esc(authority.date)}</div></div></div><div class="badges">${publicationBadge(authority)}</div><p class="snippet">${esc(authority.summary)}</p>${documentEvidence(authority)}<div class="card-actions"><button class="text-button" data-source="${esc(authority.id)}">${t("details")}</button></div></article>`).join("");
+        content.innerHTML = `${heading(`${data.law.title} · ${t("article")} ${article.number}`, `${t("originalText")} · ${article.displayedLanguage}`)}<article class="card"><div class="badges"><span class="badge ${checked ? "published" : "warning"}">${checked ? t("sourceChecked") : t("published")}</span><span class="badge">${article.translationAvailable ? `Language: ${article.displayedLanguage}` : `Original only: ${article.displayedLanguage}`}</span></div><div class="article-box"><h4>${t("article")} ${esc(article.number)}</h4><p dir="auto">${esc(article.text)}</p></div><p class="snippet">${esc(article.verification)}</p>${verificationCard}<div class="card-actions">${allSources.map((source) => `<a class="text-button" href="${esc(source.url)}" target="_blank" rel="noreferrer">${esc(source.title)}</a>`).join("")}</div></article><div style="height:10px"></div>${heading(t("relatedCases"), `${relatedCases.length} ${t("cases")} · ${relatedDecisions.length} ${t("relatedDecisions")}`)}${relatedCases.length ? `<div class="cards">${relatedCases.map(caseCard).join("")}</div>` : `<div class="notice">${t("noRelatedCases")}</div>`}${decisionCards ? `<div class="cards" style="margin-top:10px">${decisionCards}</div>` : ""}${authorityCards ? `<div style="height:10px"></div>${heading(t("supportingGuidance"), `${relatedAuthorities.length}`)}<div class="cards">${authorityCards}</div>` : ""}`;
       }
 
       function caseCard(caseItem) {
@@ -705,9 +756,12 @@
         const record = data?.item ?? data;
         if (!record) { content.innerHTML = `<div class="empty"><strong>Record unavailable</strong></div>`; return; }
         if (data.type === "case" || record.case) return renderTrace(record);
-        if (data.type === "article" && record.article) return renderArticle({ found:true, law:record.law, article:record.article, sources:record.sources ?? [], relatedCases:[], relatedDecisions:[] });
+        if (data.type === "article" && record.article) return renderArticle({ found:true, law:record.law, article:record.article, sources:record.sources ?? [], provenance:record.provenance, relatedCases:[], relatedDecisions:[], relatedAuthorities:[] });
         content.className = "";
-        content.innerHTML = `${heading(record.title ?? record.displayNumber ?? t("details"), data.type ?? "record")}<article class="card">${record.status ? `<p class="snippet">${esc(record.status)}</p>` : ""}${record.factSummary ? `<p class="snippet"><strong>Facts:</strong> ${esc(record.factSummary)}</p><p class="snippet"><strong>Reasoning:</strong> ${esc(record.reasoningSummary)}</p><p class="snippet"><strong>Outcome:</strong> ${esc(record.outcome)}</p>` : ""}${record.articles?.map?.((article) => `<div class="article-box"><h4>${t("article")} ${esc(article.number)}</h4><p>${esc(article.text)}</p></div>`).join("") ?? ""}</article>${(record.sources ?? []).map((source) => `<article class="card" style="margin-top:10px"><h3>${esc(source.title)}</h3><p class="snippet">${esc(source.publisher)} · ${esc(source.accessNote)}</p><a href="${esc(source.url)}" target="_blank" rel="noreferrer">${t("details")}</a></article>`).join("")}`;
+        const subtitle = [record.displayNumber ?? record.number, record.court ?? record.issuer, record.date].filter(Boolean).join(" · ") || (data.type ?? "record");
+        const linkedArticles = (record.lawArticles ?? []).map((articleRef) => `<span class="badge">${esc(articleRef)}</span>`).join("");
+        const notes = record.editorialNotes ?? [];
+        content.innerHTML = `${heading(record.title ?? record.displayNumber ?? record.number ?? t("details"), subtitle)}<article class="card"><div class="badges">${publicationBadge(record)}${record.isSynthetic ? dataBadge(true) : ""}${record.verification ? `<span class="badge">${esc(record.verification)}</span>` : ""}</div>${record.status ? `<p class="snippet">${esc(record.status)}</p>` : ""}${record.summary ? `<p class="snippet">${esc(record.summary)}</p>` : ""}${record.factSummary ? `<p class="snippet"><strong>Facts:</strong> ${esc(record.factSummary)}</p><p class="snippet"><strong>Reasoning:</strong> ${esc(record.reasoningSummary)}</p><p class="snippet"><strong>Outcome:</strong> ${esc(record.outcome)}</p>` : ""}${record.articles?.map?.((article) => `<div class="article-box"><h4>${t("article")} ${esc(article.number)}</h4><p>${esc(article.text)}</p></div>`).join("") ?? ""}${linkedArticles ? `<div class="badges" style="margin-top:10px">${linkedArticles}</div>` : ""}${notes.length ? `<div class="verification-item" style="margin-top:10px"><strong>${t("editorialNotes")}</strong><ul class="reason-list">${notes.map((note) => `<li>${esc(note)}</li>`).join("")}</ul></div>` : ""}${documentEvidence(record)}</article>${(record.sources ?? []).map((source) => `<article class="card" style="margin-top:10px"><h3>${esc(source.title)}</h3><p class="snippet">${esc(source.publisher ?? "")}${source.accessNote || source.notes ? ` · ${esc(source.accessNote ?? source.notes)}` : ""}</p><a href="${esc(source.url)}" target="_blank" rel="noreferrer">${t("openOfficialPublication")}</a></article>`).join("")}`;
       }
 
       async function loadCountry(countryCode, render=true) {
@@ -768,6 +822,14 @@
       });
 
       document.addEventListener("click", async (event) => {
+        const retry = event.target.closest("[data-retry-action]");
+        if (retry) {
+          if (!state.lastAction) return;
+          retry.disabled = true;
+          retry.textContent = t("retrying");
+          const { name, args, render } = state.lastAction;
+          return requestAction(name, args, { render });
+        }
         const country = event.target.closest("[data-country]"); if (country) return loadCountry(country.dataset.country, true);
         const law = event.target.closest("[data-law]"); if (law) { lawSelect.value=law.dataset.law; updateArticleList(); updateBreadcrumb(); const first=selectedLaw()?.articles?.[0]; if (first) { articleInput.value=first.number; return requestAction("get_law_article", { countryCode:state.countryCode, lawId:law.dataset.law, articleNumber:first.number, language:state.language }); } return requestAction("get_legal_source", { id:law.dataset.law, language:state.language }); }
         const trace = event.target.closest("[data-trace]"); if (trace) return requestAction("trace_case_path", { caseId:trace.dataset.trace });
@@ -800,7 +862,7 @@
             renderOverview(await checkJson(response));
           }
         } catch (error) {
-          content.innerHTML = `<div class="empty"><div><strong>Al‑Muhami Global</strong><span>${esc(error.message)}</span></div></div>`;
+          renderActionError(error);
         }
       }
       initialize();

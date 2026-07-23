@@ -1,6 +1,6 @@
 {
   "name": "al-muhami-global-chatgpt-app",
-  "version": "0.4.4",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "description": "Al-Muhami Global: a multilingual ChatGPT-native legal research and jurisprudence comparison app.",

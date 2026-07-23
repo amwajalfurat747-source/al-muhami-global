@@ -99,7 +99,7 @@ test("HTTP demo and MCP tools work end to end", { timeout: 20_000 }, async () =>
     assert.equal(frenchArticle.article.displayedLanguage, "fr");
 
     const coownershipCases = await fetch(`${baseUrl}/api/cases?countryCode=IQ&topic=coownership-dissolution`).then((response) => response.json());
-    assert.equal(coownershipCases.totalMatches, 2);
+    assert.equal(coownershipCases.totalMatches, 8);
 
     const proceduralRoutes = await fetch(`${baseUrl}/api/procedural-routes?countryCode=IQ&trackId=criminal&decisionKindId=criminal-final-conviction&methodId=retrial&language=ar`).then((response) => response.json());
     assert.equal(proceduralRoutes.routes[0].id, "iq-criminal-retrial");
@@ -123,7 +123,7 @@ test("HTTP demo and MCP tools work end to end", { timeout: 20_000 }, async () =>
     assert.ok(toolNames.includes("browse_procedural_routes"));
     assert.ok(toolNames.includes("get_filing_template"));
 
-    const widgetUri = "ui://widget/al-muhami-global-v6.html";
+    const widgetUri = "ui://widget/al-muhami-global-v8.html";
     for (const tool of listed.tools) {
       assert.equal(tool._meta?.ui?.resourceUri, widgetUri);
       assert.equal(tool._meta?.["openai/outputTemplate"], widgetUri);
